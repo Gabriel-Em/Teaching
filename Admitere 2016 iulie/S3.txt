@@ -1,0 +1,161 @@
+#include<iostream>
+using namespace std;
+
+void readArray(int a[], int &n)
+{
+	cout << "n = ";
+	cin >> n;
+
+	for (int i = 1; i <= n; i++)
+	{
+		cout << "a[" << i << "] = ";
+		cin >> a[i];
+	}
+}
+
+void findLongestIsland(int a[], int n, int &from, int &to)
+{
+	int maxLen = -1, len=-1;
+
+	from = -1;
+	to = -1;
+
+	bool foundBeggining = false;
+
+	for (int i = 2; i <= n; i++)
+	{
+		if (a[i] !=0 && a[i - 1] == 0)	// beggining of island
+		{
+			len = 1;
+			foundBeggining = true;
+		}
+		else
+			if (a[i] == 0 && a[i-1] != 0)	// end of island
+			{
+				if (len > maxLen && foundBeggining)
+				{
+					maxLen = len;
+					to = i;
+					from = i - len;
+				}
+			}
+			else  // middle of island
+				len++;
+	}
+}
+
+bool isMountain(int a[], int from, int to)
+{
+	if (to - from <2)	// if the island is made up of less than 3 elements we can't have a mountain
+		return false;
+
+	bool up = false, down = false;	// we don't know if we're going to go up or down after the first step so we initialize both of those with false
+
+	for (int i = from; i < to; i++)
+	{
+		if (a[i] < a[i + 1])	// if we're going UP
+			if (down == true)	// if we went DOWN before, then we have a valey (looks like V)
+				return false;
+			else
+				up = true;	    // otherwise we remember that we went up
+		else
+			if (a[i] > a[i + 1])	// if we're going DOWN
+				if (up != true)		// if we haven't been going UP before going DOWN then we're creating a valey
+					return false;
+				else
+					down = true;	// otherwise we remember that we went down AFTER we went up
+			else	                // if we're not going up or down then *according to the statement there's no mountain
+				return false;
+	}
+
+	if (!down)					// if we haven't been going down at all, means our island looks like / so no mountain
+		return false;
+	else
+		return true;
+}
+
+/*bool munte(int a[], int from, int to)
+{
+	int i = from;
+
+	while (i < to && a[i] < a[i + 1])
+		i++;
+
+	if (i == from || i == to)
+		return false;
+
+	while (i<to && a[i] > a[i + 1])
+		i++;
+
+	if (i == to)
+		return true;
+	
+	return false;
+}*/
+
+bool checkIfDistinct(int a[], int n)
+{
+	int values[30000] = {0};
+
+	for (int i = 1; i <= n; i++)
+		values[a[i]]++;
+
+	for (int i = 1; i < 30000; i++)
+		if (values[i] > 1)
+			return false;
+
+	return true;
+}
+
+void mostFrequentHeight(int a[], int n, int &mostFrequent, int &count)
+{
+	int values[30000] = {0};
+
+	count = 0;
+	mostFrequent = -1;
+
+	for (int i = 1; i <= n; i++)
+		values[a[i]]++;
+
+	for(int i=1;i<30000;i++)
+		if (values[i] > count)
+		{
+			count = values[i];
+			mostFrequent = i;
+		}
+}
+
+int main()
+{
+	int a[10001], n, from, to, mostFrequent, count;
+
+	readArray(a, n);
+	findLongestIsland(a, n, from, to);
+
+	if (from == -1)
+		cout << "Nu exista insule\n";
+	else
+	{
+		cout << "Cea mai lunga insula incepe la " << from << " si se intinde pana la " << to << endl;
+		if (isMountain(a, from, to))
+			cout << "Este munte\n";
+		else
+			cout << "Nu este munte\n";
+	}
+
+	if (checkIfDistinct(a, n))
+		cout << "Altitudinile sunt distincte\n";
+	else
+	{
+		cout << "Altitudinile nu sunt distincte\n";
+
+		mostFrequentHeight(a, n, mostFrequent, count);
+
+		cout << "Cea mai frecventa altitudine: " << mostFrequent << " apare de " << count << " ori.";
+	}
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}

@@ -1,0 +1,44 @@
+1. b
+2. 
+a. 2 (algoritmul calculeaza cmmdc dintre a si b)
+b. 7 si 98
+c. 
+
+citeste a, b
+
+CatTimp a =/= b executa
+	Daca a > b atunci
+		a = a - b
+	altfel
+		b = b - a
+	sfDaca
+sfCatTimp
+
+returneaza a
+
+d.
+
+void cmmdc()
+{
+	int a,b,c;
+
+	cin>>a>>b;
+
+	if (a<b)
+	{
+		a = a+b;
+		b = a-b;
+		a = a-b;
+	}
+
+	c = 0;
+
+	while(b!=0)
+	{
+		c = a%b;
+		a = b;
+		b = c;
+	}
+
+	return a;
+}

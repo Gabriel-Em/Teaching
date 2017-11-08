@@ -1,0 +1,245 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][100], int n)
+{
+	int nr, j;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "cifrele numarului " << i + 1 << ": ";
+
+		cin >> nr;
+		j = 0;
+
+		while (nr>=0 && nr <=9)
+		{
+			j++;
+			mat[i][j] = nr;
+			cin >> nr;
+		}
+
+		mat[i][0] = j;	// la fiecare linie din matrice, pe coloana 0 vom avea un numar care reprezinta numarul de cifre pe care il contine numarul de pe linia i
+	}
+}
+
+/*
+	 pentru functia de mai jos:
+
+	 return 1 -> nr1 > nr2
+	 return 0 -> nr1 = nr2
+	 return -1 -> nr1 < nr2 
+*/
+
+int compara(int nr1[], int nr2[])
+{
+	if (nr1[0] > nr2[0])
+		return 1;
+	else
+		if (nr1[0] < nr2[0])
+			return -1;
+
+	for (int i = 1; i <= nr1[0]; i++)
+		if (nr1[i] > nr2[i])
+			return 1;
+		else
+			if (nr1[i] < nr2[i])
+				return -1;
+
+	return 0;
+}
+
+void adunare(int nr1[], int nr2[], int suma[])
+{
+	int sumaInversa[100], k = 0, i, j, rest = 0, sum;
+
+	i = nr1[0];	// pozitia ultimei cifre a numarului din sir1
+	j = nr2[0];	// pozitia ultimei cifre a numarului din sir2
+
+	while (i > 0 && j > 0)
+	{
+		sum = nr1[i--] + nr2[j--] + rest;	// adunam ultima cifra a celor 2 numere plus restul adunarii numerelor anterioare
+
+		if (sum >= 10)	// daca cele 2 cifre adunate ne dau o suma mai mare sau egala cu 10 o sa adaugam sum%10 si tinem minte restul 1
+		{
+			rest = 1;
+			sum = sum % 10;
+		}
+		else
+			rest = 0;
+
+		sumaInversa[k++] = sum;
+	}
+
+	// daca mai sunt cifre ramase in unu din cele 2 numere le adaugam la suma tinand cont si de restul ramas in cazul primei cifre de adaugat
+
+	if (i > 0)
+	{
+		sumaInversa[k++] = nr1[i--] + rest;
+		rest = 0;
+	}
+
+	while (i > 0)
+		sumaInversa[k++] = nr1[i];
+
+	if (j > 0)
+	{
+		sumaInversa[k++] = nr2[j--] + rest;
+		rest = 0;
+	}
+
+	while (j > 0)
+		sumaInversa[k++] = nr2[j--];
+
+	if (rest == 1) // daca restul a ramas 1 pana in punctul asta inseamna ca numerele aveau acelasi numar de cifre dar ultimele 2 cifre adunate au avut ca rezultat o suma cu rest
+		sumaInversa[k++] = 1;
+
+	// deoarece nu stiam cate cifre va contine suma noastra am salvat cifrele sumei in ordine inversa, asa ca va trebui s-o inversam inainte de returnarea rezultatului
+
+	i = 0;
+	j = k;
+
+	while(i<k)
+		suma[j--] = sumaInversa[i++];
+	
+	suma[0] = k;	// numarul de cifre al sumei va fi adaugat pe pozitia 0
+}
+
+void scadere(int nr1[], int nr2[], int diferenta[])
+{
+	int diferentaInversa[100], k = 0, i, j, imprumut = 0, dif;
+
+	i = nr1[0];
+	j = nr2[0];
+
+	while (j > 0)
+	{
+		if (nr1[i]-imprumut - nr2[j] < 0)	// daca diferenta ultimelor 2 cifre e mai mica decat 0 ne imprumutam de la cifra din fata si setam imprumut la 1
+		{
+			dif = 10 + nr1[i--] - imprumut - nr2[j--];
+			imprumut = 1;
+		}
+		else
+		{
+			dif = nr1[i--] - imprumut - nr2[j--];
+			imprumut = 0;
+		}
+
+		diferentaInversa[k++] = dif;
+	}
+
+	while (i > 0)	// daca mai sunt cifre ramase in primul numar continuam calcularea diferentei
+	{
+		if (nr1[i] - imprumut < 0)
+		{
+			dif = 10 + nr1[i--] - imprumut;
+			imprumut = 1;
+		}
+		else
+		{
+			dif = nr1[i--] - imprumut;
+			imprumut = 0;
+		}
+
+		diferentaInversa[k++] = dif;
+	}
+
+	while (diferentaInversa[k - 1] == 0)	// din cauza cazurilor de genul 10000 minus 1 in care diferenta va contine un numar de 0 la inceput va trebui sa eliminam acele zerouri
+		k--;
+
+	i = 0;
+	j = k;
+
+	while (i < k)
+		diferenta[j--] = diferentaInversa[i++];
+
+	diferenta[0] = k;
+}
+
+void minmax(int mat[][100], int n, int &maxIndex, int &minIndex)	// returneaza indexul liniei pe care se afla sirul reprezentand numarul maxim
+{
+	maxIndex = 0;
+	minIndex = 0;
+
+	for (int i = 1; i < n; i++)
+	{
+		if (compara(mat[i], mat[maxIndex]) == 1)
+			maxIndex = i;
+
+		if (compara(mat[i], mat[minIndex]) == -1)
+			minIndex = i;
+	}
+}
+
+void sumaTotal(int mat[][100], int n, int suma[])
+{
+	adunare(mat[0], mat[1], suma);
+
+	for (int i = 2; i < n; i++)
+		adunare(mat[i], suma, suma);
+}
+
+void cmmdc(int nr1[], int nr2[], int result[])
+{
+	int copieNr1[100];
+
+	copieNr1[0] = nr1[0];
+
+	for (int i = 1; i <= nr1[0]; i++)
+		copieNr1[i] = nr1[i];
+
+	result[0] = nr2[0];
+
+	for (int i = 1; i <= nr2[0]; i++)
+		result[i] = nr2[i];
+
+	while (compara(copieNr1, result) != 0)
+		if (compara(copieNr1, result) == 1)
+			scadere(copieNr1, result, copieNr1);
+		else
+			scadere(result, copieNr1, result);
+}
+
+void cmmdcTotal(int mat[][100], int n, int result[])
+{
+	cmmdc(mat[0], mat[1], result);
+
+	for (int i = 2; i < n; i++)
+		cmmdc(mat[i], result, result);
+}
+
+void afisare(int nr[])
+{
+	for (int i = 1; i <= nr[0]; i++)
+		cout << nr[i];
+}
+
+int main()
+{
+	int mat[99][100], n, maxIndex, minIndex, suma[100], cmmdc[100];
+
+	cout << "n = ";
+	cin >> n;
+
+	citire(mat, n);
+
+	minmax(mat, n, maxIndex, minIndex);
+
+	afisare(mat[maxIndex]);
+	cout << " ";
+	afisare(mat[minIndex]);
+
+	cout << endl;
+
+	sumaTotal(mat, n, suma);
+	afisare(suma);
+
+	cout << endl;
+
+	cmmdcTotal(mat, n, cmmdc);
+	afisare(cmmdc);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

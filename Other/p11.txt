@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+void citire(char mat[][100], int &m, int &n)
+{
+	cout << "linii = ";
+	cin >> m;
+	cout << "coloane = ";
+	cin >> n;
+
+	for (int i = 0; i<m; i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "A[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+bool isVocala(char c)
+{
+	if (strchr("AEIOU", c))
+		return true;
+	return false;
+}
+
+void parcurgerePeColoane(char mat[][100], int m, int n, int indici[], int &lenIndici)
+{
+	lenIndici = 0;
+
+	int maxVocale = 0, nrVocaleColoana;
+
+	for (int i = 0; i < n; i++)
+	{
+		nrVocaleColoana = 0;
+
+		for (int j = 0; j < m; j++)
+			if (isVocala(mat[j][i]))
+				nrVocaleColoana++;
+
+		if (nrVocaleColoana != 0)
+			if (nrVocaleColoana > maxVocale)
+			{
+				indici[0] = i;
+				lenIndici = 1;
+				maxVocale = nrVocaleColoana;
+			}
+			else
+				if (nrVocaleColoana == maxVocale)
+					indici[lenIndici++] = i;
+	}
+}
+
+void afisareColoana(char mat[][100], int nrLinii, int coloana)
+{
+	for (int i = 0; i < nrLinii; i++)
+		cout << mat[i][coloana]<<" ";
+}
+
+int main()
+{
+	char mat[100][100];
+	int m, n, indici[100], lenIndici;
+
+	citire(mat, m, n);
+	parcurgerePeColoane(mat, m, n, indici, lenIndici);
+
+	if (lenIndici == 0)
+		cout << "Nu exista.";
+	else
+	{
+		cout << lenIndici << endl;
+
+		for (int i = 0; i < lenIndici; i++)
+		{
+			afisareColoana(mat, m, indici[i]);
+			cout << endl;
+		}
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,107 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][100], int &n)
+{
+	cout << "n = ";
+	cin >> n;
+
+	for(int i =0;i<n;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+void multimeCifre(int mat[][100], int n, int linie, int multime[])
+{
+	for (int i = 0; i < 10; i++)
+		multime[i] = 0;
+
+	for (int i = 0; i < n; i++)
+		while (mat[linie][i] > 0)
+		{
+			multime[mat[linie][i] % 10] = 1;
+			mat[linie][i] /= 10;
+		}
+}
+
+long numarMaxim(int multime[])
+{
+	long nr = 0;
+
+	for (int i = 9; i >= 0; i--)
+		if (multime[i] != 0)
+			nr = nr * 10 + i;
+
+	return nr;
+}
+
+long celMaiMarePalindrom(long nr)
+{
+	long palindrom, copie = nr;
+	int nrCifre = 0, p = 1;
+
+	if (nr == 10)
+		return 9;
+
+	if(nr<10)
+		return nr;
+
+	while (copie > 0)
+	{
+		nrCifre++;
+		copie /= 10;
+	}
+
+	for (int i = 1; i <= nrCifre / 2; i++)
+		p *= 10;
+
+	if (nrCifre % 2 == 0)
+	{ 
+		palindrom = nr / p;
+		palindrom = palindrom / 10 * 10 + nr%p / (p / 10);
+		copie = palindrom;
+
+		while (copie > 0)
+		{
+			palindrom = palindrom * 10 + copie % 10;
+			copie /= 10;
+		}
+	}
+	else
+	{
+		palindrom = nr / (p*10);
+		palindrom = palindrom * 10 + nr / p % 10 - 1;
+		copie = palindrom / 10;
+
+		while (copie > 0)
+		{
+			palindrom = palindrom * 10 + copie % 10;
+			copie /= 10;
+		}
+	}
+
+	return palindrom;
+}
+
+int main()
+{
+	int mat[100][100], n, multime[10];
+	long nr;
+
+	citire(mat, n);
+	
+	for (int i = 0; i < n; i++)
+	{
+		multimeCifre(mat, n, i, multime);
+		nr = numarMaxim(multime);
+
+		cout << celMaiMarePalindrom(nr) << " ";
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

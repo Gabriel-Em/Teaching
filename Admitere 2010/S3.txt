@@ -1,0 +1,85 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+void tiparire(int matrice[][50], int n)
+{
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = 1; j <= n; j++)
+			if (n < 27)
+				cout << setw(2) << matrice[i][j] << " ";
+			else
+				cout << setw(3) << matrice[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+bool estePrim(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr < 2 || nr % 2 == 0)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+int getIthPrime(int i)
+{
+	if (i == 1)
+		return 2;
+	else
+	{
+		int p = 3;
+		while (i != 2)
+		{
+			i--;
+			p += 2;
+			while (!estePrim(p))
+				p += 2;
+		}
+
+		return p;
+	}
+}
+
+void construireMatrice(int matrice[][50], int n)
+{
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++)
+		{
+			if (i == j)
+				matrice[i][j] = 0;
+			else
+				if (i > j)
+					matrice[i][j] = i;
+				else
+					matrice[i][j] = getIthPrime(i);
+		}
+}
+int main()
+{
+	int matrice[50][50], n;
+
+	cout << "n = ";
+	cin >> n;
+
+	construireMatrice(matrice, n);
+	tiparire(matrice, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

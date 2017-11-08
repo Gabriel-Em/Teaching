@@ -1,0 +1,14 @@
+a. Dandu-se un numar natural nenul a, sa se determine b un numar format din cifrele impare a lui a in ordinea aparitiei lor. Daca a nu contine cifre impare atunci b va returna 0.
+b. 13
+c.
+int F(int a)
+{
+	if(a>0)
+		if(a%10%2 != 0)
+			return F(a/10) * 10 + a%10;
+		else
+			return F(a/10);
+	else
+		return 0;
+		
+}

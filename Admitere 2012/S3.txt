@@ -1,0 +1,321 @@
+#include<iostream>
+using namespace std;
+
+void citire(int sir[], int &lungime)
+{
+	cout << "lungime = ";
+	cin >> lungime;
+
+	for (int i = 0; i < lungime; i++)
+	{
+		cout << "X[" << i + 1 << +"] = ";
+		cin >> sir[i];
+	}
+}
+
+bool isAsemenea(int nr1, int nr2)
+{
+	int cifre[10] = { 0 };
+
+	while (nr1 > 0)
+	{
+		cifre[nr1 % 10] = 1;
+		nr1 /= 10;
+	}
+
+	while (nr2 > 0)
+	{
+		if (cifre[nr2 % 10] == 0)
+			return false;
+
+		cifre[nr2 % 10] = 2;
+		nr2 /= 10;
+	}
+
+	for (int i = 0; i <= 9; i++)
+		if (cifre[i] == 1)
+			return false;
+
+	return true;
+}
+
+void elimina(int sir[], int &lungime, int poz1, int poz2)
+{
+	int i = poz1;
+
+	while (i < lungime - (poz2 - poz1 + 1))
+	{
+		sir[i] = sir[i + (poz2 - poz1) + 1];
+		i++;
+	}
+
+	lungime = lungime - (poz2 - poz1 + 1);
+}
+
+bool exista(int sir[], int lungime, int value)
+{
+	for (int i = 0; i < lungime; i++)
+		if (sir[i] == value)
+			return true;
+	return false;
+}
+
+void insereaza(int sursa[], int poz1, int poz2, int destinatie[], int &lenDestinatie)
+{
+	int i = poz1;
+	while (i <= poz2)
+	{
+		if (!exista(destinatie, lenDestinatie, sursa[i]))
+			destinatie[lenDestinatie++] = sursa[i];
+
+		i++;
+	}
+}
+
+void eliminaAsemenea(int X[], int &lenX, int R[], int &lenR)
+{
+	int poz1 = 0, poz2 = -1;
+
+	int i = 1;
+
+	while(i<lenX)
+	{
+		if (isAsemenea(X[i - 1], X[i]))
+			poz2 = i;
+		else
+		{
+			if (poz2 - poz1 > 0)
+			{
+				insereaza(X, poz1, poz2, R, lenR);
+				elimina(X, lenX, poz1, poz2);
+				i = i - (poz2 - poz1 + 1);
+			}
+			poz1 = i;
+			poz2 = -1;
+		}
+
+		i++;
+	}
+
+	if (poz2 - poz1 > 0)
+	{
+		insereaza(X, poz1, poz2, R, lenR);
+		elimina(X, lenX, poz1, poz2);
+	}
+}
+
+void tiparire(int sir[], int lungime)
+{
+	cout << "(";
+	for (int i = 0; i < lungime; i++)
+		cout << sir[i] << ", ";
+	cout << "\b\b)";
+}
+
+int main()
+{
+	int X[1000], lenX, R[1000], lenR = 0;
+
+	citire(X, lenX);
+	eliminaAsemenea(X, lenX, R, lenR);
+
+	if (lenX != 0)
+	{
+		cout << "X = ";
+		tiparire(X, lenX);
+	}
+	else
+		cout << "X este sirul vid";
+
+	if (lenR != 0)
+	{
+		cout << "\nR = ";
+		tiparire(R, lenR);
+	}
+	else
+		cout << "\nR este sirul vid";
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+// alta varianta
+
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lenSir)
+{
+	cin >> lenSir;
+	for (int i = 0; i < lenSir; i++)
+		cin >> sir[i];
+}
+
+void afisare(int sir[], int lenSir)
+{
+	if (lenSir == 0)
+		cout << "Sirul e vid.";
+	else
+		for (int i = 0; i < lenSir; i++)
+			cout << sir[i] << " ";
+}
+/*
+0 1 0 1 0 0 0 0 0 0
+0 1 2 3 4 5 6 7 8 9
+
+*/
+
+bool asemenea(int nr1, int nr2)
+{
+	int cifre[10] = { 0 };
+
+	while (nr1 > 0)
+	{
+		cifre[nr1 % 10] = 1;
+		nr1 /= 10;
+	}
+
+	while (nr2 > 0)
+	{
+		if (cifre[nr2 % 10] == 0)
+			return false;
+
+		cifre[nr2 % 10] = 2;
+		
+		nr2 /= 10;
+	}
+
+	for (int i = 0; i <= 9; i++)
+		if (cifre[i] == 1)
+			return false;
+
+	return true;
+
+	/*
+	var 2
+
+	int cifreNr1[10] = {0}, cifreNr2[10] = {0};
+
+	while (nr1 > 0)
+	{
+		cifreNr1[nr1 % 10] = 1;
+		nr1 /= 10;
+	}
+
+	while (nr2 > 0)
+	{
+		cifreNr2[nr2 % 10] = 1;
+		nr2 /= 10;
+	}
+
+	for(int i =0;i<=9;i++)
+		if(cifreNr1[i] != cifreNr2[i])
+			return false;
+
+	return true;
+
+	*/
+}
+
+/*
+1 2 3 8 9 6 7 8 9 
+0 1 2 3 4 5 6 7 8
+      -     -
+	              i
+
+poz1 = 3
+poz2 = 6
+
+lenSir = 5
+
+i = 8
+
+*/
+void eliminare(int sir[], int &lenSir, int poz1, int poz2)
+{
+	int i = poz2 + 1;
+
+	while (i < lenSir)
+	{
+		sir[i - (poz2 - poz1 + 1)] = sir[i];
+		i++;
+	}
+
+	lenSir = lenSir - (poz2 - poz1 + 1);
+}
+
+bool exista(int sir[], int lenSir, int element)
+{
+	for (int i = 0; i < lenSir; i++)
+		if (sir[i] == element)
+			return true;
+
+	return false;
+}
+
+void inserareInR(int X[], int lenX, int poz1, int poz2, int R[], int &lenR)
+{
+	for (int i = poz1; i <= poz2; i++)
+		if (!exista(R, lenR, X[i]))
+			R[lenR++] = X[i];
+}
+/*
+15,  4
+ 0   1     2     3   4    5   6   7
+                          i
+
+poz1 = 2
+poz2 = 4
+
+lenX = 5
+
+*/
+void eliminareSecvente(int X[], int &lenX, int R[], int &lenR)
+{
+	int poz1 = 0, poz2 = -1, i = 1;
+
+	while (i < lenX)
+	{
+		if (!asemenea(X[i - 1], X[i]))
+		{
+			poz2 = i - 1;
+
+			if (poz2 - poz1 >= 1)
+			{
+				inserareInR(X, lenX, poz1, poz2, R, lenR);
+				eliminare(X, lenX, poz1, poz2);
+				i = i - (poz2 - poz1 + 1);
+			}
+			poz1 = i;
+		}
+
+		i++;
+	}
+
+	poz2 = lenX - 1;
+
+	if (poz2 - poz1 >= 1)
+	{
+		inserareInR(X, lenX, poz1, poz2, R, lenR);
+		eliminare(X, lenX, poz1, poz2);
+	}
+}
+int main()
+{
+	int X[500], lenX, R[500], lenR = 0;
+
+	citire(X, lenX);
+	eliminareSecvente(X, lenX, R, lenR);
+
+	cout << "X = ";
+	afisare(X, lenX);
+
+	cout << "\nR = ";
+	afisare(R, lenR);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,58 @@
+#include <iostream>
+using namespace std;
+
+void citire(char cuvinte[][11], int &lenCuvinte)
+{
+	cout << "nr cuvinte = ";
+	cin >> lenCuvinte;
+	cin.ignore();
+
+	for (int i = 0; i < lenCuvinte; i++)
+	{
+		cout << "cuvant " << i + 1 << ": ";
+		cin.getline(cuvinte[i], 10);
+	}
+}
+
+bool anagrama(char cuvant1[], char cuvant2[])
+{
+	int litere[26] = { 0 };
+
+	for (unsigned i = 0; i < strlen(cuvant1); i++)
+		litere[cuvant1[i] - 'A']++;
+
+	for (unsigned i = 0; i < strlen(cuvant2); i++)
+		litere[cuvant2[i] - 'A']--;
+
+	for (int i = 0; i < 26; i++)
+		if (litere[i] != 0)
+			return false;
+
+	return true;
+}
+
+int main()
+{
+	char Y[100][11], X[11];
+	int n;
+	bool exista = false;
+
+	cout << "cuvant = ";
+	cin.getline(X, 10);
+
+	citire(Y, n);
+	
+	for (int i = 0; i < n; i++)
+		if (anagrama(X, Y[i]))
+		{
+			cout << Y[i] << " ";
+			exista = true;
+		}
+
+	if(!exista)
+		cout<<"Nu exista";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

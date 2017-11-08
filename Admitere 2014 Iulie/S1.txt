@@ -1,0 +1,128 @@
+a) 
+De fiecare data cand o functie transmite argumente unei functii apelate, este transmisa, de fapt, o copie a parametrilor efectivi. (parametrii prin valoare). Pentru a evita acest lucru, este posibil sa se trimita ADRESA de memorie a parametrului original prin adaugarea simbolului & in fata parametrului in antetul functiei apelate. (parametrii prin referinta)
+
+void valoare(int x)
+{
+	x++;
+}
+
+void referinta(int &x)
+{
+	x++;
+}
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int x = 3;
+
+	cout<<x<<" ";		// 3
+	valoare(x);		
+	cout<<x<<" ";		// 3
+	referinta(x);		
+	cout<<x<<" ";		// 4
+}
+
+b)
+
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lungime)
+{
+	cout << "lungime = ";
+	cin >> lungime;
+
+	for (int i = 0; i < lungime; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+void determinaCifre(int nr, int cifre[])
+{
+	int cif[10] = { 0 };
+	while (nr > 0)
+	{
+		int c = nr % 10;
+
+		if (cif[c] == 0)
+		{
+			cif[c] = 1;
+			cifre[c]++;
+		}
+		nr /= 10;
+	}
+}
+int determinareCifra(int sir[], int len)
+{
+	int cifre[10] = { 0 }, max = -1,poz =-1;
+
+	for (int i = 0; i < len; i++)
+		determinaCifre(sir[i], cifre);
+
+	for(int i=0;i<10;i++)
+		if (cifre[i] > max)
+		{
+			max = cifre[i];
+			poz = i;
+		}
+
+	return poz;
+}
+
+int main()
+{
+	int X[20], n;
+
+	citire(X, n);
+	cout << determinareCifra(X, n);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+c)
+
+#include <iostream>
+using namespace std;
+
+long faraTablouri(long nr)
+{
+	long palindrom = 0;
+
+	while (nr > 0)
+	{
+		palindrom = palindrom * 10 + nr % 10;
+		nr /= 10;
+	}
+	return palindrom;
+}
+
+long cuTablouri(long nr)
+{
+	int cifre[9], len = 0,palindrom = 0;
+
+	while (nr > 0)
+	{
+		cifre[len++] = nr % 10;
+		nr /= 10;
+	}
+
+	for (int i = 0;i<len;i++)
+		palindrom = palindrom * 10 + cifre[i];
+
+	return palindrom;
+}
+
+int main()
+{
+	cout << faraTablouri(123456789) << endl;
+	cout << cuTablouri(123456789);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

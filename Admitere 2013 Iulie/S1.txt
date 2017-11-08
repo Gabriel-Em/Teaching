@@ -1,0 +1,53 @@
+a)
+
+complexitate pe scurt = de cate ori se executa cele mai influente blocuri de instructiuni intr-un algoritm
+
+Complexitatea reprezinta puterea de calcul necesara implementarii unui algoritm. Ea are doua componente principale, si anume complexitatea in timp si cea in spatiu. Complexitatea in spatiu se refera la volumul de memorie necesar calculelor, iar cea în timp se refera la timpul necesar efectuarii calculelor, ambele fiind exprimate ca functii de n, unde n este marimea datelor de intrare.
+
+bool exista(int sir[], int lenSir, int element)
+{
+	for(int i = 0;i < lenSir; i++)
+		if(sir[i] == element)
+			return true;
+
+	return false;
+}
+
+O(n) [n = lenSir]
+
+b)
+in pascal functiile sunt de 2 tipuri = functii (care nu au tipul void) si proceduri (care au tipul void)
+
+ex int suma(int a, int b) <- functie
+   void afisare(int sir[], int lungime) <- procedura
+
+in C++ nu exista decat conceptul de functie
+
+/\/\/\/\//\/\/\/\/\/\/\/\/\/\/\
+vezi fisierul "Subprogram.pdf"
+/\/\/\/\//\/\/\/\/\/\/\/\/\/\/\
+
+c)
+
+In sirul lui Fibonacci fiecare numar reprezinta suma a doua numere anterioare, in afara de primele 2 cu care incepe sirul si care au valoarea 0 si 1.
+
+Ex: 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 ........
+
+long fibonacci(int k)
+{
+	if(k==1)
+		return 0;
+
+	long nr1, nr2;
+
+	nr1 = 0;
+	nr2 = 1;
+
+	for (int i = 3; i <= k; i++)
+	{
+		nr2 = nr1 + nr2;
+		nr1 = nr2 - nr1;
+	}
+
+	return nr2;
+}

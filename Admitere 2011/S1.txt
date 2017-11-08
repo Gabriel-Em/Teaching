@@ -1,0 +1,167 @@
+a. o variabila este o marime de un anumit tip de date care-si poate schimba valoarea de mai multe ori in timpul executiei unui program
+
+#############################################################
+ variabilele statice si dinamice au fost scoase din programa
+#############################################################
+
+variabile statice: Variabilele care sunt alocate in memoria programului. Valoarea lor nu se pierde pana cand blocul de cod in care au fost declarate este eliminat din memorie si sunt accesibile doar in interiorul blocului de cod in care au fost declarate.
+
+#include<iostream>
+using namespace std;
+
+void functie(int a)
+{
+	static int x;
+	int y = 0;
+
+	cout << "before x: " << x<<endl;
+	cout << "before y: " << y<<endl;
+
+	x += a;
+	y += a;
+
+	cout << "after x: " << x<<endl;
+	cout << "after y: " << y << "\n\n";
+}
+
+int main()
+{
+	functie(2);
+	// before x: 0
+	// before y: 0
+	// after x: 2
+	// after y: 2
+
+	functie(2);
+	// before x: 2
+	// before y: 0
+	// after x: 4
+	// after y: 2
+
+	functie(2);
+	// before x: 4
+	// before y: 0
+	// after x: 6
+	// after y: 2
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+variabile dinamice: variabile a caror perioada de existenta este stabilita de catre programator. Sunt alocate la cerere, dinamic si sunt distruse atunci cand nu mai sunt referite de nicaieri.
+
+#include<iostream>
+using namespace std;
+
+
+int main()
+{
+	int *a = new int;
+	
+	*a = 5;
+
+	cout << a << " " << *a << endl << endl;
+
+	delete(a);
+	a = NULL;
+
+	int *b = new int[3];
+
+	b[0] = 9;
+	b[1] = 8;
+	b[2] = 7;
+
+	cout << b << " " << *b << endl;
+	b++;
+	cout << b << " " << *b << endl;
+	b++;
+	cout << b << " " << *b << endl;
+	b--;
+	b--;
+	delete[] b;
+	b = NULL;
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+b. tabloul de date = o structura de date care reprezinta o colectie de obiecte de acelasi tip reunite sub un singur nume
+
+tablou unidimensional =  este o colectie structurata de elemente care pot fi accesate individual specificand pozitia elementului printr-un indice reprezentat de o constanta intreaga.
+
+ex int v[10] = {1,2,3,4,5,6,7,8,9,10}
+
+v[5] = 6
+
+trimiterea prin parametru
+
+void afisare(int v[], int n)
+{
+	for(int i = 0; i < n; i++)
+		cout << v[i] << " ";
+}
+
+tablou bidimensional = colectie structurata de elemente care pot fi accesate individual specificand pozitia elementului prin 2 indici reprezentati de o constanta intreaga deoarece tabloul are 2 dimensiuni.
+
+ex int v[2][2] = { {1,2}, {3,4} }
+
+v[1][0] = 3
+
+void afisare(int v[][2], int n, int m)
+{
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < m; j++)
+			cout << v[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+c. sortarea unui sir de date = metoda prin intermediul careia se poate ordona o anumita multime de obiecte dupa un criteriu impus.
+
+bubble sort:
+
+Let us take the array of numbers "5 1 4 2 8", and sort the array from lowest number to greatest number using bubble sort. In each step, elements written in between [] are being compared. Three passes will be required.
+
+First Pass
+([5] [1]  4   2   8 ) ->  ( [1] [5]  4   2   8 ), Here, algorithm compares the first two elements, and swaps since 5 > 1.
+( 1  [5] [4]  2   8 ) ->  (  1  [4] [5]  2   8 ), Swap since 5 > 4
+( 1   4  [5] [2]  8 ) ->  (  1   4  [2] [5]  8 ), Swap since 5 > 2
+( 1   4   2  [5] [8]) ->  (  1   4   2   5   8 ), Now, since these elements are already in order (8 > 5), algorithm does not swap them.
+
+Second Pass
+([1] [4]  2   5   8 ) ->  (  1   4   2   5   8 )
+( 1  [4] [2]  5   8 ) ->  (  1  [2] [4]  5   8 ), Swap since 4 > 2
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 )
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 )
+Now, the array is already sorted, but the algorithm does not know if it is completed. The algorithm needs one whole pass without any swap to know it is sorted.
+
+Third Pass
+([1] [2]  4   5   8 ) ->  (  1   2   4   5   8 )
+( 1  [2] [4]  5   8 ) ->  (  1   2   4   5   8 )
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 )
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 )
+
+void bubblesort(int v[], int n)
+{
+	bool ok;
+	do
+	{
+		ok = true;
+		for(int i = 0; i < n; i++)
+			if(v[i] > v[i+1])
+			{
+				v[i] = v[i] + v[i+1];
+				v[i+1] = v[i] - v[i+1];
+				v[i] = v[i] - v[i+1];
+				ok = false;
+			}
+	} while (!ok);
+}
+
+O(n^2)

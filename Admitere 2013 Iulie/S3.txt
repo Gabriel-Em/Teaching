@@ -1,0 +1,117 @@
+#include<iostream>
+using namespace std;
+
+void citire(int sir[], int &lungimeSir)
+{
+	int nr;
+	lungimeSir = 0;
+
+	cout << "element["<<lungimeSir<<"] = ";
+	cin >> nr;
+
+	while (nr != 0)
+	{
+		sir[lungimeSir++] = nr;
+		cout << "element[" << lungimeSir << "] = ";
+		cin >> nr;
+	}
+}
+
+bool isPrime(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr < 2 || nr % 2 == 0)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+int sumaCifre(int nr)
+{
+	int suma = 0;
+
+	while (nr > 0)
+	{
+		suma += nr % 10;
+		nr /= 10;
+	}
+
+	return suma;
+}
+
+void insert(int sir[], int &lenSir, int y)
+{
+	if (lenSir == 0 || y > sir[lenSir - 2])
+	{
+		sir[lenSir] = y;
+		sir[lenSir+1] = 1;
+		lenSir += 2;
+	}
+	else
+	{
+		int i = 0;
+		while (i < lenSir&&sir[i] < y)
+			i += 2;
+
+		if (sir[i] == y)
+			sir[i + 1]++;
+		else
+		{
+			for (int j = lenSir + 1; j >= i + 2; j--)
+				sir[j] = sir[j - 2];
+
+			sir[i] = y;
+			sir[i + 1] = 1;
+			lenSir += 2;
+		}
+	}
+}
+
+void generateY(int X[], int n, int Y[], int &lenY)
+{
+	for (int i = 0; i < n; i++)
+		if (isPrime(sumaCifre(X[i])))
+				insert(Y, lenY, X[i]);
+}
+
+void tiparire(int sir[], int lenSir)
+{
+	if (lenSir == 0)
+		cout << "Sirul Y este vid";
+	else
+	{
+		cout << "Y = (";
+
+		for (int i = 0; i < lenSir; i++)
+			if (i % 2 == 0)
+				cout << "(" << sir[i] << ", ";
+			else
+				cout << sir[i] << "), ";
+
+		cout << "\b\b)";
+	}
+}
+
+int main()
+{
+	int X[500], n, Y[1000], lenY = 0;
+
+	citire(X, n);
+	generateY(X, n, Y, lenY);
+	tiparire(Y, lenY);
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}

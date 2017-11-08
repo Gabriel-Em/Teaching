@@ -1,0 +1,302 @@
+1.
+
+            1
+            |
+          __2__
+         /     \
+        3____   4
+       /   \ \
+     _5___  6 7
+    / | \ \ 
+   8  9 10 11
+
+raspuns corect: b
+
+2.
+
+suma gradelor = 2 x nr muchii
+
+pentru 10 muchii, suma gradelor = 20
+
+nodul a - 2 muchii (in nodul b si c)
+nodul b - 4 muchii (in nodul a, c, d si e)
+nodul c - 6 muchii (in nodul a, b, d, e, f si g)
+nodul d - 8 muchii (in nodul b, c, e, f, g, h, i si j)
+
+daca ne oprim aici, avem un graf cu 10 muchii si suma gradelor 20, dar nu se respecta conditia "fiecare nod are un numar par NENUL de vecini" si "nu exista doua noduri cu acelasi numar de vecini" => ar trebui sa continuam sa asignam muchii
+
+nodul e va trebui sa aiba minim 10 muchii si pentru asta va trebui sa introducem pe langa nodurile b, c, d (care sunt deja vecini cu e) si nodurile f, g, h, i si j (care exista in graf si pot primii muchii), inca doua noduri k si l pentru a satisface cerinta problemei "nu exista doua noduri avand acelasi numar de vecini"
+
+se observa ca e nevoie de noi noduri la fiecare pas si nu exista un punct in care ne putem opri cu asignatul de muchii nodurilor astfel incat graful sa respecte toate conditiile impuse => raspuns corect: d
+
+3.
+
+a.
+
+pentru a demonstra ca sirul final e compus doar din a-uri, trebuie sa demonstram ca toate combinatiile de 3 caractere din multimea {a,b} duc cu regulile din R la "aaa".
+
+Toate combiatiile = (aaa,aab,aba,baa,abb,bab,bba,bbb)
+
+aaa: aaa
+aab: r1(aab->aaa) => aaa
+aba: r2(aba->aab) => r1(aab->aaa) => aaa
+baa: r4(baa->abb) => r3(abb->aba) => r2(aba->aab) => r1(aab->aaa) => aaa
+abb: r3(abb->aba) => r2(aba->aab) => r1(aab->aaa) => aaa
+bab: r5(bab->aba) => r2(aba->aab) => r1(aab->aaa) => aaa
+bba: => r6(bba->baa) => r4(baa->abb) => r3(abb->aba) => r2(aba->aab) => r1(aab->aaa) => aaa
+bbb: => r7(bbb->bab) =>r5(bab->aba) => r2(aba->aab) => r1(aab->aaa) => aaa
+
+din ^ rezulta ca orice combinatie de 3 litere am gasi in sirul nostru, acea combinatie va tinde mereu spre "aaa" (adica indiferent de combinatie, ea va putea fii transformata garantat in altceva pana la intalnirea combinatiei "aaa")
+
+b.
+
+#include <iostream>
+using namespace std;
+
+struct regula
+{
+	char stanga[4];
+	char dreapta[4];
+
+	/*
+	memoram fiecare regula de forma {r1: aab -> aaa} intr-un struct care contine cate-o proprietate pentru fiecare grup de caractere al regulii
+
+	exemplu:
+
+	daca vrem sa memoram regula {r7: bbb -> bab} vom scrie
+
+	regula r7;				declarare
+	strcpy(r7.stanga, "bbb\0");		initializare grup stang
+	strcpy(r7.dreapta, "bab\0");		initializare grup drept
+	*/
+};
+
+void initReguli(regula listaReguli[])
+{
+	// cream cele 7 reguli date de problema
+
+	regula r1;
+	strcpy(r1.stanga, "aab\0");
+	strcpy(r1.dreapta, "aaa\0");
+
+	regula r2;
+	strcpy(r2.stanga, "aba\0");
+	strcpy(r2.dreapta, "aab\0");
+
+	regula r3;
+	strcpy(r3.stanga, "abb\0");
+	strcpy(r3.dreapta, "aba\0");
+
+	regula r4;
+	strcpy(r4.stanga, "baa\0");
+	strcpy(r4.dreapta, "abb\0");
+
+	regula r5;
+	strcpy(r5.stanga, "bab\0");
+	strcpy(r5.dreapta, "aba\0");
+
+	regula r6;
+	strcpy(r6.stanga, "bba\0");
+	strcpy(r6.dreapta, "baa\0");
+
+	regula r7;
+	strcpy(r7.stanga, "bbb\0");
+	strcpy(r7.dreapta, "bab\0");
+
+	// si le adaugam intr-o lista de reguli;
+
+	listaReguli[0] = r1;
+	listaReguli[1] = r2;
+	listaReguli[2] = r3;
+	listaReguli[3] = r4;
+	listaReguli[4] = r5;
+	listaReguli[5] = r6;
+	listaReguli[6] = r7;	
+}
+
+void citire(char sir[])
+{
+	cout << "sir = ";
+	cin.getline(sir, 255);
+}
+
+bool validareSir(char sir[])	// validam daca sirul citit contine intr-adevar doar caractere 'a' si 'b'
+{
+	for (int i = 0; i < strlen(sir); i++)
+		if (sir[i] != 'a' && sir[i] != 'b')
+			return false;
+	return true;
+}
+
+int cautaRegula(char sir[], regula listaReguli[])
+{
+	/*
+		parametrii:
+
+		sir = sir compus din 3 caractere (ex: "aab") care reprezinta o bucata din sirul original
+		listaReguli = lista regulilor de transformare
+
+		Vom returna indicele regulii care poate transforma sirul sir intr-un nou alt sir din listaReguli daca acesta exista. In caz contrar returnam -1.
+
+		exemplu:
+
+		Daca sirul original este "abaaba", atunci pentru grupul "aba" de la inceputul sirului vom primi ca parametrii in aceasta functie
+
+		sir = "aba\0"
+		listaReguli = lista regulilor de transformare
+
+		In continuare va trebui sa cautam o regula care-l transforma pe "aba" in altceva. Stim ca regulile contin in partea stanga un sir de 3 caractere
+		netransformate care vor trebui sa se transforme in sirul memorat in partea dreapta, deci trebuie sa il cautam pe "aba" in termenul stang
+		al regulilor din lista regulilor.
+	*/
+
+	for (int i = 0; i < 7; i++)
+		/* 
+			pentru if-ul de mai jos:
+
+			sir = sirul de 3 caractere din sirul orginal caruia ii cautam o regula
+			listaReguli = lista regulilor de transformare
+			listaReguli[i] = regula de pe pozitia i din lista regulilor
+			listaReguli[i].stanga = termenul stang al regulii de pe pozitia i din lista regulilor
+		*/
+		if (strcmp(sir, listaReguli[i].stanga) == 0)
+			return i;
+
+	// daca returnam -1 inseamna ca sirul sir continea un grup de caractere pentru care nu exista o regula de transformare
+	return -1;
+}
+
+void afisareTransformare(regula r,int rIndex,char sirOriginal[], char sirTransformat[], int i)
+{
+	/*
+		functia asta nu-i importanta pentru voi, deoarece nu aveti de facut asa ceva
+		am scris-o pentru a afisa fiecare transformare facuta, pe ecran
+	*/
+	for(int j = 0; j < strlen(sirOriginal);j++)
+	{
+		if (j == i)
+			cout << "[";
+
+		cout << sirOriginal[j];
+
+		if (j == i + 2)
+			cout << "]";
+	}
+
+	cout << " => r" << rIndex + 1 << "{" << r.stanga << "->" << r.dreapta << "} => ";
+
+	for (int j = 0; j < strlen(sirTransformat); j++)
+	{
+		if (j == i)
+			cout << "[";
+
+		cout << sirTransformat[j];
+
+		if (j == i + 2)
+			cout << "]";
+	}
+
+	cout << endl;
+}
+
+void aplicaReguli(char sir[], regula listaReguli[],int &nrAplicari)
+{
+	bool existaRegula; // trebuie sa aplicam reguli pana cand nu se mai poate aplica nicio regula
+
+	do
+	{
+		existaRegula = false;	// presupunem ca nu se poate aplica nicio regula
+
+		for (int i = 0; i < strlen(sir) - 2; i++)	
+		{
+			/* 
+				parcurgem sirul original de la pozitia 0 la strlen(sir)-2 deoarece vrem sa cautam reguli pentru toate grupurile de 3 caractere din sir
+				in felul urmator:
+
+				daca sirul original = "abbaba" atunci pentru a forma siruri de cate 3 caractere va trebui sa parcurgem sirul de la pozitia 0 pana la
+				                       012345
+				
+				pozitia 3, pentru a obtine siruri cu caracterele de pe pozitiile 012, 123, 234 si 345 (deci i se opreste pe 3)
+
+			*/
+
+			char bucata[4];
+			strncpy(bucata, sir + i, 3);	// copiem in bucata primele 3 caractere din sirul sir de la pozitia i
+			bucata[3] = '\0';
+
+			int index = cautaRegula(bucata, listaReguli);	// cautam o regula care se poate aplica sirului de 3 caractere de la pozitia i din sir
+
+			if (index != -1)	// daca am gasit o astfel de regula
+			{
+				/////////////////////
+				char aux[256];			// nu va intereseaza liniile astea, ele fiind adaugate pentru afisarile transformarilor de pe ecran de care
+				strcpy(aux, sir);		// vorbeam mai sus
+				/////////////////////
+
+				strncpy(sir + i, listaReguli[index].dreapta, 3);
+				/*
+					pentru linia de mai sus luam urmatorul exemplu:
+
+					pentru sir = "abaaaa", atunci, pentru i = 0, avem sirul de 3 caractere care incepe la pozitia 0 = "aba"
+							      012345
+
+					sa consideram lista de reguli din problema cu r2:aba->aab - regula pe care o vom folosi mai jos
+
+					deoarece ne aflam in acest if, am gasit o regula care il transforma pe "aba" in altceva 
+					index = indexul regulii care-l poate transforma pe "aba" in altceva
+
+					avand informatiile astea, putem sa inlocuim grupul aba din sir cu grupul aab din regula, folosind linia de cod de mai sus astfel:
+
+					strncpy = copiaza n caractere dintr-un sir in altul
+					sir+i = destinatia in care vom copia caracterele (pentru sir si i din exemplul de mai sus sir+i = "abaaaa" pentru ca i = 0)
+					listaReguli[index].dreapta = caracterele din dreapta regulii de pe pozitia index din lista de reguli (aab pentru regula din exemplu)
+					3 = nr de caractere pe care le copiem
+				*/
+
+				////////////////////////////////////////////////////////////////////////
+				afisareTransformare(listaReguli[index], index, aux, sir, i);				// din nou nu aveti nevoie de linia asta
+				////////////////////////////////////////////////////////////////////////
+
+				nrAplicari++;			// numaram transformarea
+				existaRegula = true;	// am gasit o regula care s-a putut aplica deci acest lucru
+			}
+		}
+	} while (existaRegula);	// facem transformari pana cand nu exista nicio regula care poate fi aplicata pe sirul nostru
+}
+
+bool valideazaSirRezultat(char sir[])	// verificam daca sirul final transformat contine doar caracterul 'a'
+{
+	for (int i = 0; i < strlen(sir); i++)
+		if (sir[i] != 'a')
+			return false;
+	return true;
+}
+
+int main()
+{
+	regula listaReguli[7];
+	char sir[256];
+	int nrAplicari = 0;
+
+	initReguli(listaReguli);	// initializam lista de reguli
+	citire(sir);				// ctim un sir de la tastatura
+
+	if (validareSir(sir))		// daca acel sir e compus doar din 'a' si 'b'
+	{
+		cout << "\nSir original: " << sir << "\n\nAu fost aplicate urmatoarele reguli:\n\n";
+		aplicaReguli(sir, listaReguli,nrAplicari);	// aplicam reguli pe sir
+
+		cout << "\n\nSirul transformat dupa aplicarea a " << nrAplicari << " reguli este: " << sir;
+
+		if (valideazaSirRezultat(sir))	// daca sirul final contine doar caracterul 'a'
+			cout << "\n\nAcest sir este format doar din caracterul 'a', deci transformarea a reusit.";
+		else
+			cout << "\n\nTransformare nereusita";
+	}
+	else
+		cout << "Date invalide";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

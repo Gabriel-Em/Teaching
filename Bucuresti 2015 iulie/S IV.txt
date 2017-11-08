@@ -1,0 +1,64 @@
+#include<iostream>
+#include<fstream>
+using namespace std;
+void citire(int &a, int &b, int &c, int &n, int x[])
+{
+	cout << "a="; cin >> a;
+	cout << "b="; cin >> b;
+	cout << "c="; cin >> c;
+	cout << "n="; cin >> n;
+	cout << "dati numerele din secventa s:";
+	for (int i = 0; i < n; i++)
+		cin >> x[i];
+}
+int rezEcuatie(int a, int b, int c, int x, int y)
+{
+	return x*x*a + y*y*b;
+}
+void perechi(int v[], int n, int a, int b, int c)
+{
+	int i = 0;
+	while (i < n)
+	{
+		int j = i + 1;
+		while (j < n)
+		{
+			if (rezEcuatie(a, b, c, v[i], v[j]) == c)
+				cout << "(" << v[i] << "," << v[j] << ")";
+			if (rezEcuatie(a, b, c, v[j], v[i]) == c)
+				cout << "(" << v[j] << "," << v[i] << ")";
+
+			j++;
+		}
+		i++;
+	}
+}
+void perechiEficientCresc(int v[], int n, int a, int b, int c, int &count)
+{
+	int i = 0;
+	count = 0;
+	while (i < n && v[i]*v[i]*a < c/2 && v[i]*v[i]*b<c/2)
+	{
+		int j = i + 1;
+		while (j < n && v[j]*v[j]*b <= c - (v[i]*v[i]*a) && v[j]*v[j]*a <= c - (v[i]*v[i]*b))
+		{
+			if (rezEcuatie(a, b, c, v[i], v[j]) == c)
+				count++;
+			if (rezEcuatie(a, b, c, v[j], v[i]) == c)
+				count++;
+			j++;
+		}
+		i++;
+	}
+}
+int main()
+{
+	int x[50], a, b, c, n, count;
+	citire(a, b, c, n, x);
+	perechi(x, n, a, b, c);
+	perechiEficientCresc(x, n, a, b, c, count);
+	cout << "sunt " << count << " perechi cu proprietatea ceruta";
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

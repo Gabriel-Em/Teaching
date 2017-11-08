@@ -1,0 +1,108 @@
+a. Un tip de date reprezinta tipul de informatie care poate fi stocat intr-o variabila.
+Exemple:
+char - stocheaza numere pe 8 biti. Aceste numere pot fi echivalente cu reprezentarea lor sub forma de caractere din tabelul ASCII ('a','b','c')
+int - stocheaza numere intregi pe 32 biti (1,2,3)
+b. Fie un tablou unidimensional X cu n elemente si o valoare k. Precizati daca k este un element al sirului X.
+1. cautare secventiala intr-un sir ordonat
+
+subalgoritm(X,n,k):
+	i <- 0
+	gasit <- 0
+	gata <- 0
+	Cat timp i < n si gata = 0 executa
+		daca X[i] = k atunci
+			gasit = 1
+			gata = 1
+		altfel
+			daca X[i] > k atunci
+				gata = 1
+			altfel
+				i <- i + 1
+	sfCT
+
+	Daca gasit = 1
+		returneaza 1
+	altfel
+		returneaza 0
+
+complexitate: O(n)
+
+2. cautare binara intr-un si ordonat
+
+subalgoritm(X,k,s,d):
+	daca (s>d)
+		return 0
+	m <- s+d/2
+	daca k > X[m] atunci
+		subalgoritm(X,k,m+1,d)
+	altfel
+		daca k < X[m] atunci
+			subalgoritm(X,k,s,m-1)
+		altfel
+			return 1
+
+complexitate O(log2(n))
+
+1 5 8 10 12 17 23 98 139
+0 1 2 3  4  5  6  7  8
+
+s = 0
+d = 8
+
+k = 8
+
+m = 12
+s = 0
+d = 3
+
+m = 5
+s = 2
+d = 3
+
+m = 8 = k => GASIT
+
+k = 15
+
+m = 12
+s = 5
+d = 8
+
+m = 23
+s = 5
+d = 5
+
+m = 17
+s = 5
+d = 4
+
+s>d => k NU EXISTA IN X
+
+complexitate = de cate ori se executa cele mai influente blocuri de instructiuni intr-un algoritm
+
+Complexitatea reprezinta puterea de calcul necesara implementarii unui algoritm. Ea are doua componente principale, ?i anume complexitatea în timp ?i cea în spa?iu. Complexitatea în spa?iu se refera la volumul de memorie necesar calculelor, iar cea în timp se refera la timpul necesar efectuarii calculelor, ambele fiind exprimate ca func?ii de n, unde n este marimea datelor de intrare.
+
+3. Subprogramele sunt parti ale unui program, identificabile prin nume, care se pot activa la cerere prin intermediul acestor nume.
+
+void valoare(int x)
+{
+	x++;
+}
+
+void referinta(int &x)
+{
+	x++;
+}
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int x = 3;
+
+	cout<<x<<" ";		// 3
+	valoare(x);		
+	cout<<x<<" ";		// 3
+	referinta(x);		
+	cout<<x<<" ";		// 4
+}

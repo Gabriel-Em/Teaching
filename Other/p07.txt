@@ -1,0 +1,111 @@
+#include <iostream>
+using namespace std;
+
+struct Cuvant {
+	char cuvant[25];
+	int nrAparitii;
+};
+
+void citire(char fraze[][100], int &lenFraze)
+{
+	cout << "Numar fraze: ";
+	cin >> lenFraze;
+	cin.ignore();
+
+	for (int i = 0; i < lenFraze; i++)
+	{
+		cout << "Fraza " << i + 1 << ": ";
+		cin.getline(fraze[i], 100);
+	}
+}
+
+void primulCuvant(char fraza[], char cuvant[])
+{
+	int i = 0;
+	while (fraza[i] != ' ' && i < strlen(fraza))	// numaram cate caractere are primul cuvant din fraza
+		i++;
+
+	strncpy(cuvant, fraza, i);	// copiem cuvantul din fraza in cuvant
+
+	cuvant[i] = '\0';	// punem '\0' la sfarsit
+
+	// eliminam cuvantul din fraza
+
+	if (strlen(fraza) == strlen(cuvant))
+		fraza[0] = '\0';
+	else
+		strcpy(fraza, fraza + i + 1);
+}
+
+void toUpper(char cuvant[])	// convertim lowercase to UPPERCASE
+{
+	for (unsigned i = 0; i < strlen(cuvant); i++)
+		if (cuvant[i] > 90)
+			cuvant[i] = cuvant[i] - 32;
+}
+
+void inserare(Cuvant cuvinte[], int &lenCuvinte, char cuvant[])
+{
+	toUpper(cuvant);
+
+	int i = 0;
+	while (i < lenCuvinte && strcmp(cuvinte[i].cuvant, cuvant) != 0)
+		i++;
+
+	if (i == lenCuvinte)
+	{
+		strcpy(cuvinte[lenCuvinte].cuvant, cuvant);
+		cuvinte[lenCuvinte++].nrAparitii = 1;
+	}
+	else
+		cuvinte[i].nrAparitii++;
+}
+
+void selectionSort(Cuvant cuvinte[], int lenCuvinte)
+{
+	int pozMin;
+
+	for (int i = 0; i < lenCuvinte - 1; i++)
+	{
+		pozMin = i;
+
+		for (int j = i + 1; j < lenCuvinte; j++)
+			if (strcmp(cuvinte[j].cuvant,cuvinte[pozMin].cuvant) < 0)
+				pozMin = j;
+
+		Cuvant aux = cuvinte[pozMin];
+		cuvinte[pozMin] = cuvinte[i];
+		cuvinte[i] = aux;
+	}
+}
+
+void afisare(Cuvant cuvinte[], int lenCuvinte)
+{
+	for (int i = 0; i < lenCuvinte; i++)
+		cout << "(" << cuvinte[i].cuvant << "," << cuvinte[i].nrAparitii << ")\n";
+}
+
+int main()
+{
+	int lenFraze, lenCuvinte = 0;
+	char fraze[50][100], cuvant[25];
+	Cuvant cuvinte[200];
+
+	citire(fraze, lenFraze);
+
+	for (int i = 0; i < lenFraze; i++)
+	{
+		while (strlen(fraze[i]) != 0)
+		{
+			primulCuvant(fraze[i], cuvant);
+			inserare(cuvinte, lenCuvinte, cuvant);
+		}
+	}
+
+	selectionSort(cuvinte, lenCuvinte);
+	afisare(cuvinte, lenCuvinte);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

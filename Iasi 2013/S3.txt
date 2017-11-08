@@ -1,0 +1,183 @@
+a)
+
+G R E U J
+T E S T O
+I N F O C
+
+b)
+
+c)
+
+#include<iostream>
+using namespace std;
+
+bool finalSolution(bool cuvPlasate[], int lenCuvinte)
+{
+	for (int i = 0; i < lenCuvinte; i++)
+		if (!cuvPlasate[i])
+			return false;
+
+	return true;
+}
+
+bool isEmpty(char careu[][25], int latime, int inaltime)
+{
+	for (int i = 0; i < inaltime; i++)
+		for (int j = 0; j < latime; j++)
+			if (careu[i][j] != '-')
+				return false;
+	return true;
+}
+bool tryPlace(char careu[][25], char cuvant[], unsigned i, unsigned j, int orientare, unsigned inaltime, unsigned latime)
+{
+	if (orientare==0)
+	{
+		if (j + strlen(cuvant) - 1 > latime - 1)
+			return false;
+
+		bool incrucisat;
+
+		if (isEmpty(careu, latime, inaltime))
+			incrucisat = true;
+		else
+			incrucisat = false;
+
+		for (unsigned k = j; k < j + strlen(cuvant); k++)
+		{
+			if (careu[i][k] == '-')
+				careu[i][k] = cuvant[k - j];
+			else
+				if (careu[i][k] != cuvant[k - j])
+					return false;
+				else
+					incrucisat = true;
+		}
+
+		if (incrucisat)
+			return true;
+		else
+			return false;
+	}
+	else
+	{
+		if (i + strlen(cuvant) - 1 > inaltime - 1)
+			return false;
+
+		bool incrucisat;
+
+		if (isEmpty(careu, latime, inaltime))
+			incrucisat = true;
+		else
+			incrucisat = false;
+
+		for (unsigned k = i; k < i + strlen(cuvant); k++)
+		{
+			if (careu[k][j] == '-')
+				careu[k][j] = cuvant[k - i];
+			else
+				if (careu[k][j] != cuvant[k - i])
+					return false;
+				else
+					incrucisat = true;
+		}
+
+		if (incrucisat)
+			return true;
+		else
+			return false;
+	}
+}
+
+void print(char careu[][25], int inaltime, int latime)
+{
+	for (int i = 0; i < inaltime; i++)
+	{
+		for (int j = 0; j < latime; j++)
+			cout << careu[i][j] << " ";
+		cout << endl;
+	}
+}
+
+
+void copiaza(char careu[][25], char copie[][25], int inaltime, int latime)
+{
+	for (int i = 0; i < inaltime; i++)
+		for (int j = 0; j < latime; j++)
+			copie[i][j] = careu[i][j];
+}
+
+bool backtracking(char careu[][25], int inaltime, int latime, int lenCuvinte, char cuvinte[][30], bool cuvPlasate[])
+{
+	for (int cuvIndex = 0; cuvIndex < lenCuvinte; cuvIndex++)
+		if (!cuvPlasate[cuvIndex])
+			for (int i = 0; i < inaltime; i++)
+				for (int j = 0; j < latime; j++)
+					for (int orientare = 0; orientare < 2; orientare++)
+					{
+						char copieCareu[25][25];
+
+						copiaza(careu, copieCareu, inaltime, latime);
+
+						if (tryPlace(careu, cuvinte[cuvIndex], i, j, orientare, inaltime, latime))
+						{
+							cuvPlasate[cuvIndex] = true;
+
+							if (finalSolution(cuvPlasate, lenCuvinte))
+								return true;
+
+							if (backtracking(careu, inaltime, latime, lenCuvinte, cuvinte, cuvPlasate))
+								return true;
+
+							cuvPlasate[cuvIndex] = false;
+						}
+
+						copiaza(copieCareu, careu, inaltime, latime);
+						
+					}
+
+	return false;
+}
+void solve(char cuvinte[][30], int lenCuvinte, int inaltime, int latime, char careuRez[][25])
+{
+	for (int i = 0; i < inaltime; i++)
+		for (int j = 0; j < latime; j++)
+			careuRez[i][j] = '-';
+
+	bool cuvintePlasate[25]{ false };
+
+	if (!backtracking(careuRez, inaltime, latime, lenCuvinte, cuvinte, cuvintePlasate))
+		for (int i = 0; i < inaltime; i++)
+			for (int j = 0; j < latime; j++)
+				careuRez[i][j] = '-';
+}
+
+void citire(char cuvinte[][30], int &lenCuvinte, int &inaltime, int &latime)
+{
+	cout << "Nr cuvinte: ";
+	cin >> lenCuvinte;
+	cin.get();
+	for (int i = 0; i < lenCuvinte; i++)
+	{
+		cout << "cuvant " << i + 1 << ":";
+		cin.get(cuvinte[i], 255);
+		cin.get();
+	}
+
+	cout << "inaltime: ";
+	cin >> inaltime;
+	cout << "latime: ";
+	cin >> latime;
+}
+int main()
+{
+	char careu[25][25], cuvinte[25][30];
+	int inaltime, latime, lenCuvinte;
+
+	citire(cuvinte, lenCuvinte, inaltime, latime);
+	solve(cuvinte, lenCuvinte, inaltime, latime, careu);
+	print(careu, inaltime, latime);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

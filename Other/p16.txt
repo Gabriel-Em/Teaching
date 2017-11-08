@@ -1,0 +1,93 @@
+#include <iostream>
+using namespace std;
+
+bool prim(int nr)
+{
+	if (nr == 2)
+		return true;
+	if (nr % 2 == 0 || nr < 2)
+		return false;
+
+	int i = 3;
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+	return true;
+}
+
+void construireX(int m, int n, int X[])
+{
+	int p = 2;
+
+	for (int i = 0; i <= m*n; i++)
+	{
+		while (!prim(p))
+			p++;
+
+		X[i] = p;
+		p++;
+	}
+}
+
+void construireMatrice(int X[], int m, int n, int mat[][50])
+{
+	int limita1, limita2, pas, xIndex = 0;
+
+	for (int i = 0; i < m; i++)
+	{
+		if (i % 2 == 0)
+		{
+			limita1 = 0;
+			limita2 = n;
+			pas = 1;
+		}
+		else
+		{
+			limita1 = n - 1;
+			limita2 = -1;
+			pas = -1;
+		}
+
+		int j = limita1;
+
+		while (j != limita2)
+		{
+			mat[i][j] = X[xIndex++];
+			j = j + pas;
+		}
+	}
+}
+
+void afisare(int mat[][50], int m, int n)
+{
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+			cout << mat[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+int main()
+{
+	int m, n, X[2500], mat[50][50];
+	
+	cout << "m = ";
+	cin >> m;
+	cout << "n = ";
+	cin >> n;
+
+	construireX(m, n, X);
+	construireMatrice(X, m, n, mat);
+
+	cout<<"matricea A:\n";
+	afisare(mat, m, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

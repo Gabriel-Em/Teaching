@@ -1,0 +1,86 @@
+#include<iostream>
+using namespace std;
+
+void citire(int X[], int &n)
+{
+	n = 0;
+	int x;
+
+	cin >> x;
+	while (x != 0)
+	{
+		X[n++] = x;
+		cin >> x;
+	}
+}
+
+bool isPalindrom(int nr)
+{
+	int copie = nr, inversNr = 0;
+
+	while (copie > 0)
+	{
+		inversNr = inversNr * 10 + copie % 10;
+		copie /= 10;
+	}
+
+	if (inversNr == nr)
+		return true;
+	else
+		return false;
+}
+
+void insert(int Y[], int &m, int value)
+{
+	if (m == 0 || value < Y[m - 1])
+		Y[m++] = value;
+	else
+	{
+		int i = 0;
+		while (Y[i] > value)
+			i++;
+
+		if (Y[i] != value)
+		{
+			for (int j = m; j > i; j--)
+				Y[j] = Y[j - 1];
+
+			Y[i] = value;
+			m++;
+		}
+	}
+}
+
+void tiparire(int sir[], int lungime)
+{
+	if (lungime == 0)
+		cout << "Sirul Y este vid";
+	else
+		for (int i = 0; i < lungime; i++)
+			cout << sir[i] << " ";
+}
+
+void determinarePalindrom(int X[], int n, int Y[], int &m)
+{
+	for (int i = 0; i < n; i++)
+		if (isPalindrom(X[i]))
+			insert(Y, m, X[i]);
+}
+
+int main()
+{
+	int X[1000], Y[1000], n, m = 0;
+
+	citire(X, n);
+	determinarePalindrom(X, n, Y, m);
+	tiparire(Y, m);
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+/*
+la determinarea cifrelor unui numar cerinta problemei s-ar putea referi la o functie care returneaza un array cu cifrele numarului
+*/

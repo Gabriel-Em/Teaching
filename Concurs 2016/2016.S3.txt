@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+
+void readSir(int a[], int &n)
+{
+	cout << "lungime sir = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "a[" << i << "] = ";
+		cin >> a[i];
+	}
+}
+
+bool isPalindrom(int a[], int n)
+{
+	for (int i = 0; i < n / 2; i++)
+		if (a[i] != a[n - 1 - i])
+			return false;
+
+	return true;
+}
+
+void doPermutare(int sir[], int lenSir)
+{
+	int element = a[0];
+	for (int i = 0; i < lenSir - 1; i++)
+		a[i] = a[i + 1];
+
+	a[lenSir - 1] = element;
+}
+
+int getNrPermutari(int a[], int n)
+{
+	int nrPermutari = 0;
+
+	if (isPalindrom(a, n))
+		return nrPermutari;
+
+	while (nrPermutari < n-1)
+	{
+		doPermutare(a,n);
+
+		nrPermutari++;
+
+		if (isPalindrom(a, n))
+			return nrPermutari;
+	}
+
+	return -1;
+}
+
+void writeResult(int nrPermutari)
+{
+	if (nrPermutari == -1)
+		cout << "Nu";
+	else
+		cout << "Da "<<nrPermutari;
+}
+
+int main()
+{
+	int a[1000],n;
+
+	readSir(a, n);
+	int nrPermutari = ;
+	writeResult(getNrPermutari(a, n));
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}

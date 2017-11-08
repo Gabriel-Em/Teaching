@@ -1,0 +1,115 @@
+#include <iostream>
+using namespace std;
+
+void citire(int A[][100], int &m, int &n)
+{
+	cout << "linii = ";
+	cin >> m;
+	cout << "coloane = ";
+	cin >> n;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "A[" << i << "][" << j << "] = ";
+			cin >> A[i][j];
+		}
+}
+
+void inserare(int sir[], int &lenSir, int element)
+{
+	if (lenSir == 0 || element < sir[lenSir - 1])
+		sir[lenSir++] = element;
+	else
+	{
+		int i = 0;
+
+		while (sir[i] > element)
+			i++;
+
+		if (sir[i] != element)
+		{
+			for (int j = lenSir; j > i; j--)
+				sir[j] = sir[j - 1];
+
+			sir[i] = element;
+
+			lenSir++;
+		}
+	}
+}
+
+bool prim(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr % 2 == 0 || nr < 2)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+
+		i += 2;
+	}
+
+	return true;
+}
+
+void construireX(int A[][100], int m, int n, int X[], int &lenX)
+{
+	lenX = 0;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			if (A[i][j] < 0)
+				inserare(X, lenX, A[i][j]);
+}
+
+void construireY(int A[][100], int m, int n, int Y[], int &lenY)
+{
+	lenY = 0;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			if (prim(A[i][j]))
+				inserare(Y, lenY, A[i][j]);
+}
+
+void afisare(int sir[], int lenSir)
+{
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << " ";
+}
+
+int main()
+{
+	int A[100][100], m, n, X[10000], lenX, Y[10000], lenY;
+
+	citire(A, m, n);
+
+	construireX(A, m, n, X, lenX);
+	construireY(A, m, n, Y, lenY);
+
+	cout << "\nSirul X este ";
+
+	if (lenX == 0)
+		cout << "vid";
+	else
+		afisare(X, lenX);
+
+	cout << "\nSirul Y este ";
+
+	if (lenY == 0)
+		cout << "vid";
+	else
+		afisare(Y, lenY);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

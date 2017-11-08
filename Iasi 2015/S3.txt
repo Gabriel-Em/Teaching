@@ -1,0 +1,419 @@
+3.
+
+a. IV
+
+-2  1  0  0
+ 1  1  0  0
+ 0  0  1  1
+ 0  0  1 -2
+
+b. si c.
+
+#include <iostream>
+#include <iomanip> // pentru setw
+#include <time.h> // pentru srand si rand
+
+using namespace std;
+
+struct pozitie
+{
+	int linie;
+	int coloana;
+};
+
+void citire(int matrice[][25], int &lenMatrice)
+{
+	cout << "lungimea matricei = ";
+	cin >> lenMatrice;
+
+	for (int i = 0; i<lenMatrice; i++)
+		for (int j = 0; j < lenMatrice; j++)
+		{
+			cout << "matrice[" << i << "][" << j << "] = ";
+			cin >> matrice[i][j];
+		}
+}
+
+bool isDangerous(int matrice[][25], int lenMatrice, int i, int j)
+{
+	if (i != 0)
+	{
+		if (matrice[i - 1][j] == -1)	// vecinul de sus
+			return true;
+
+		if (j != 0 && matrice[i - 1][j - 1] == -1)	// vecinul din stanga sus
+			return true;
+	}
+
+	if (j != 0)
+	{
+		if (matrice[i][j - 1] == -1) // vecinul din stanga
+			return true;
+
+		if (i != lenMatrice - 1 && matrice[i + 1][j - 1] == -1)	// vecinul din stanga jos
+			return true;
+	}
+
+	if (i != lenMatrice - 1)
+	{
+		if (matrice[i + 1][j] == -1)	// vecinul de jos
+			return true;
+		if (j != lenMatrice - 1 && matrice[i + 1][j + 1] == -1)	// vecinul din dreapta jos
+			return true;
+	}
+
+	if (j != lenMatrice - 1)
+	{
+		if (matrice[i][j + 1] == -1)	// vecinul din dreapta
+			return true;
+		if (i != 0 && matrice[i - 1][j + 1] == -1)	// vecinul din dreapta sus
+			return true;
+	}
+
+	return false;
+}
+
+int mineCount(int matrice[][25], int lenMatrice, int i, int j)
+{
+	int count = 0;
+
+	if (i != 0)
+	{
+		if (matrice[i - 1][j] == -1)	// vecinul de sus
+			count++;
+
+		if (j != 0 && matrice[i - 1][j - 1] == -1)	// vecinul din stanga sus
+			count++;
+	}
+
+	if (j != 0)
+	{
+		if (matrice[i][j - 1] == -1) // vecinul din stanga
+			count++;
+
+		if (i != lenMatrice - 1 && matrice[i + 1][j - 1] == -1)	// vecinul din stanga jos
+			count++;
+	}
+
+	if (i != lenMatrice - 1)
+	{
+		if (matrice[i + 1][j] == -1)	// vecinul de jos
+			count++;
+		if (j != lenMatrice - 1 && matrice[i + 1][j + 1] == -1)	// vecinul din dreapta jos
+			count++;
+	}
+
+	if (j != lenMatrice - 1)
+	{
+		if (matrice[i][j + 1] == -1)	// vecinul din dreapta
+			count++;
+		if (i != 0 && matrice[i - 1][j + 1] == -1)	// vecinul din dreapta sus
+			count++;
+	}
+
+	return count;
+}
+
+void functionB(int matrice[][25], int lenMatrice, int matriceRezultat[][25])				// punctul b
+{
+	for (int i = 0; i < lenMatrice; i++)
+		for (int j = 0; j < lenMatrice; j++)
+		{
+			if (matrice[i][j] != -1)
+			{
+				if (isDangerous(matrice, lenMatrice, i, j))
+					matriceRezultat[i][j] = 1;
+				else
+					matriceRezultat[i][j] = 0;
+			}
+			else
+				matriceRezultat[i][j] = -1;
+		}
+}
+
+pozitie pop(pozitie pozitii[], int &lenPozitii)		// scoate primul element din lista si il returneaza (acel element e eliminat din lista)
+{
+	pozitie p = pozitii[0];
+
+	for (int i = 0; i < lenPozitii - 1; i++)
+		pozitii[i] = pozitii[i + 1];
+
+	lenPozitii--;
+
+	return p;
+}
+
+void pushback(pozitie pozitii[], int &lenPozitii, pozitie pozitie)	// adauga un element la sfarsitul unei liste
+{
+	pozitii[lenPozitii++] = pozitie;
+}
+
+bool exista(pozitie pozitii[], int lenPozitii, int linie, int coloana)		// verifica daca pozitia (linie,coloana) exista in lista "pozitii"
+{
+	for (int i = 0; i < lenPozitii; i++)
+		if (pozitii[i].linie == linie && pozitii[i].coloana == coloana)
+			return true;
+
+	return false;
+}
+
+void functionC(int matrice[][25], int lenMatrice, int l, int c, int matriceRezultat[][25])	// punctul c
+{
+	if (matrice[l][c] == -1)	// daca (l,c) e mina copiem matricea originala in matriceaRezultat
+	{
+		for (int i = 0; i < lenMatrice; i++)
+			for (int j = 0; j < lenMatrice; j++)
+				matriceRezultat[i][j] = matrice[i][j];
+	}
+	else
+		if (isDangerous(matrice, lenMatrice, l, c))	// daca (l,c) e zona periculoasa
+		{
+			matriceRezultat[l][c] = mineCount(matrice, lenMatrice, l, c);	// punem pe pozitia (l,c) din matricea rezultat numarul de mine vecine
+																			
+			// si umplem restul matricei cu -2
+			for (int i = 0; i < lenMatrice; i++)
+				for (int j = 0; j < lenMatrice; j++)
+					if (i != l || j != c)
+						matriceRezultat[i][j] = -2;
+		}
+		else      // daca (l,c) nu e zona periculoasa
+		{
+			// umplem matricea rezultat cu - 2;
+
+			for (int i = 0; i < lenMatrice; i++)
+				for (int j = 0; j < lenMatrice; j++)
+					matriceRezultat[i][j] = -2;
+
+			pozitie vizitate[25], deVizitat[25];			// declaram un vector in care vom memora pozitiile ramase de verificat din matrice si cele pe care le-am verificat deja
+			int lenVizitate = 0, lenDeVizitat = 1;
+
+			// in deVizitat pe prima pozitie punem (l,c)
+
+			deVizitat[0].linie = l;
+			deVizitat[0].coloana = c;
+
+			while (lenDeVizitat != 0)		// cat timp mai avem pozitii de vizitat
+			{
+				pozitie pozCurent = pop(deVizitat, lenDeVizitat);	// scoatem prima pozitie din deVizitat
+				pushback(vizitate, lenVizitate, pozCurent);			// adaugam acea pozitie in vizitate
+
+				if (isDangerous(matrice, lenMatrice, pozCurent.linie, pozCurent.coloana))	// daca pozitia curenta e periculoasa
+				{
+					// punem in matricea rezultat numarul de mine vecine pozitiei
+					matriceRezultat[pozCurent.linie][pozCurent.coloana] = mineCount(matrice, lenMatrice, pozCurent.linie, pozCurent.coloana);
+				}
+				else  // daca pozitia curenta nu e periculoasa
+				{
+					matriceRezultat[pozCurent.linie][pozCurent.coloana] = 0;	// adaugam 0 pe pozitia curenta
+
+					// adaugam toti vecinii (care exista) pozitiei curente care nu se afla in vectorii vizitate si deVizitat in vectorul deVizitat
+
+					// vecinu de sus
+					if (pozCurent.linie != 0)
+					{
+						if (!exista(vizitate, lenVizitate, pozCurent.linie - 1, pozCurent.coloana) && !exista(deVizitat, lenDeVizitat, pozCurent.linie - 1, pozCurent.coloana))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie - 1;
+							vecin.coloana = pozCurent.coloana;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+
+						// stanga sus
+						if (pozCurent.coloana != 0 && !exista(vizitate, lenVizitate, pozCurent.linie - 1, pozCurent.coloana - 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie - 1, pozCurent.coloana - 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie - 1;
+							vecin.coloana = pozCurent.coloana - 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+
+					}
+
+					// stanga
+					if (pozCurent.coloana != 0)
+					{
+						if (!exista(vizitate, lenVizitate, pozCurent.linie, pozCurent.coloana - 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie, pozCurent.coloana - 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie;
+							vecin.coloana = pozCurent.coloana - 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+
+						// stanga jos
+						if (pozCurent.linie != lenMatrice - 1 && !exista(vizitate, lenVizitate, pozCurent.linie + 1, pozCurent.coloana - 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie + 1, pozCurent.coloana - 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie + 1;
+							vecin.coloana = pozCurent.coloana - 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+					}
+
+					// jos
+					if (pozCurent.linie != lenMatrice - 1)
+					{
+						if (!exista(vizitate, lenVizitate, pozCurent.linie + 1, pozCurent.coloana) && !exista(deVizitat, lenDeVizitat, pozCurent.linie + 1, pozCurent.coloana))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie + 1;
+							vecin.coloana = pozCurent.coloana;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+
+						// dreapta jos
+						if (pozCurent.coloana != lenMatrice - 1 && !exista(vizitate, lenVizitate, pozCurent.linie + 1, pozCurent.coloana + 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie + 1, pozCurent.coloana + 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie + 1;
+							vecin.coloana = pozCurent.coloana + 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+					}
+
+					// dreapta
+					if (pozCurent.coloana != lenMatrice - 1)
+					{
+						if (!exista(vizitate, lenVizitate, pozCurent.linie, pozCurent.coloana + 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie, pozCurent.coloana + 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie;
+							vecin.coloana = pozCurent.coloana + 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+
+						// dreapta sus
+						if (pozCurent.linie != 0 && !exista(vizitate, lenVizitate, pozCurent.linie - 1, pozCurent.coloana + 1) && !exista(deVizitat, lenDeVizitat, pozCurent.linie - 1, pozCurent.coloana + 1))
+						{
+							pozitie vecin;
+							vecin.linie = pozCurent.linie - 1;
+							vecin.coloana = pozCurent.coloana + 1;
+
+							pushback(deVizitat, lenDeVizitat, vecin);
+						}
+					}
+				}
+			}
+		}
+}
+
+void afisare(int matrice[][25], int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			cout << setw(2) << matrice[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+////////////////////////// nu va tre astea ///////////////////////////
+
+int ReadOption(int max)
+{
+	int opt;
+
+	while ((cout << "\nAlegeti optiunea: " && !(cin >> opt)) || (opt < 1 || opt > max))
+	{
+		cout << "Optiunea nu exista!" << endl;
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	return opt;
+}
+
+void generateRandomMatrix(int matrice[][25], int &n)
+{
+	srand(time(NULL));
+	n = rand() % 7 + 4;	// generez un numar random de la 4 la 10
+
+	for (int i = 0; i<n; i++)
+		for (int j = 0; j < n; j++)
+		{
+			int r = rand() % 4;		// 25% sansa sa fie mina
+
+			if (r == 0)
+				matrice[i][j] = -1;
+			else
+				matrice[i][j] = 0;
+		}
+}
+//////////////////////////////////////////////////////////////////////////////
+
+int main()
+{
+	int matrice[25][25], matriceRezultat[25][25], lenMatrice, l, c;
+
+	int option = 23;
+	generateRandomMatrix(matrice, lenMatrice);
+
+	// meniu fancy
+	while (option != 5)
+	{
+		cout << "Meniu";
+		cout << "\n1.Citire matrice de la tastatura";
+		cout << "\n2.Generare matrice random noua";
+		cout << "\n3.Afisare 0 pe pozitiile nepericuloase si 1 pe pozitiile periculoase (punctul b)";
+		cout << "\n4.Transformare dupa descrirerea din problema (punctul c)";
+		cout << "\n5.Iesire";
+		cout << "\n\nPuzzle original:\n\n";
+
+		afisare(matrice, lenMatrice);
+
+		cout << "\nlungime: " << lenMatrice << "\n";
+
+		option = ReadOption(5);
+
+		switch (option)
+		{
+		case 1:
+			citire(matrice, lenMatrice);
+			break;
+		case 2:
+			generateRandomMatrix(matrice, lenMatrice);
+			break;
+		case 3:
+			functionB(matrice, lenMatrice, matriceRezultat);
+			cout << endl;
+			afisare(matriceRezultat, lenMatrice);
+			cout << endl;
+			system("pause");
+			break;
+		case 4:
+			while ((cout << "l,c = " && !(cin >> l >> c)) || (l < 0 || l > lenMatrice - 1 || c < 0 || c > lenMatrice - 1))
+			{
+				cout << "l,c invalide!\n" << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			functionC(matrice, lenMatrice, l, c, matriceRezultat);
+			cout << endl;
+			afisare(matriceRezultat, lenMatrice);
+			cout << endl;
+			system("pause");
+		default:
+			break;
+		}
+
+		system("cls");
+	}
+
+	return 0;
+}

@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+void citire(long sir[], int &lenSir)
+{
+	cout << "lungime = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+long long alaturare(long a, long b)
+{
+	long copie = b, p=1;
+
+	while (copie > 0)
+	{
+		p *= 10;
+		copie /= 10;
+	}
+
+	return a*p + b;
+}
+
+bool palindrom(long long nr)
+{
+	long long copie = nr, invers = 0;
+
+	while (copie > 0)
+	{
+		invers = invers * 10 + copie % 10;
+		copie /= 10;
+	}
+
+	if (nr == invers)
+		return true;
+
+	return false;
+}
+
+long long celMaiMarePalindrom(long X[], int n)
+{
+	long long max = -1, nr;
+
+	for(int i =0;i<n;i++)
+		for (int j = i + 1; j < n; j++)
+		{
+			nr = alaturare(X[i], X[j]);
+			
+			if (palindrom(nr) && nr > max)
+				max = nr;
+
+			nr = alaturare(X[j], X[i]);
+
+			if (palindrom(nr) && nr > max)
+				max = nr;
+		}
+
+	return max;
+}
+
+int main()
+{
+	long X[50];
+	int n;
+	long long max;
+
+	citire(X, n);
+
+	max = celMaiMarePalindrom(X, n);
+
+	if (max == -1)
+		cout << "Nu exista.";
+	else
+		cout << max;
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,80 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][100], int &n)
+{
+	cout << "n = ";
+	cin >> n;
+
+	for(int i =0;i<n;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+void interschimbareLinii(int mat[][100], int n, int p, int q)
+{
+	int aux;
+
+	for (int i = 0; i < n; i++)
+	{
+		aux = mat[p][i];
+		mat[p][i] = mat[q][i];
+		mat[q][i] = aux;
+	}
+}
+
+void interschimbareColoane(int mat[][100], int n, int p, int q)
+{
+	int aux;
+
+	for (int i = 0; i < n; i++)
+	{
+		aux = mat[i][p];
+		mat[i][p] = mat[i][q];
+		mat[i][q] = aux;
+	}
+}
+
+void selectionSort(int mat[][100], int n)
+{
+	int pozMin;
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		pozMin = i;
+
+		for (int j = i + 1; j < n; j++)
+			if (mat[j][j] < mat[pozMin][pozMin])
+				pozMin = j;
+
+		interschimbareLinii(mat, n, i, pozMin);
+		interschimbareColoane(mat, n, i, pozMin);
+	}
+}
+
+void afisare(int mat[][100], int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			cout << mat[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+int main()
+{
+	int mat[100][100], n;
+	
+	citire(mat, n);
+	selectionSort(mat, n);
+	afisare(mat, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

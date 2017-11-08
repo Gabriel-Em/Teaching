@@ -1,0 +1,9 @@
+a)
+
+pentru sirul 5,8,24,9,64,83, algoritmul calculeaza primaCifra(8*24) + primaCifra(24*9) + primaCifra(9*64)+primaCifra(64*83) = 1 + 2 + 5 + 5 = 13
+
+b) (4) 8 1 8 1 deoarece primaCifra(8*1) + primaCifra(1*8) + primaCifra(8*1) = 8+8+8 = 24
+
+valori mai complexe: 4 8 10 82 99
+
+c) 3 52 2 23 deoarece primaCifra(52*2) + primaCifra(2*23) = 1 + 4 = 5

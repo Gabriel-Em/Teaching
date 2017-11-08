@@ -1,0 +1,134 @@
+#include<iostream>
+using namespace std;
+
+struct Triplet {
+	int linie, coloana, valoare;
+};
+
+struct MatriceRara {
+	int nrLinii, nrColoane, nrTriplete;
+	Triplet triplete[1000];
+};
+
+bool checkMaiMica(Triplet t1, Triplet t2)
+{
+	// true   ->   t1   <   t2
+	// false  ->   t1   >=  t2
+
+	if (t1.linie < t2.linie || t1.linie == t2.linie && t1.coloana < t2.coloana)
+		return true;
+
+	return false;
+}
+
+void inserare(MatriceRara &m, Triplet t)
+{
+	if (m.nrTriplete == 0 || checkMaiMica(m.triplete[m.nrTriplete - 1], t))
+		m.triplete[m.nrTriplete] = t;
+	else
+	{
+		int i = 0;
+		while (checkMaiMica(m.triplete[i], t))
+			i++;
+
+		for (int j = m.nrTriplete; j > i; j--)
+			m.triplete[j] = m.triplete[j - 1];
+
+		m.triplete[i] = t;
+	}
+
+	m.nrTriplete++;
+}
+
+int getElement(MatriceRara m, int linie, int coloana)
+{
+	for (int i = 0; i < m.nrTriplete; i++)
+		if (m.triplete[i].linie == linie && m.triplete[i].coloana == coloana)
+			return m.triplete[i].valoare;
+
+	return 0;
+}
+
+void citire(MatriceRara &m)
+{
+	cout << "n = ";
+	cin >> m.nrLinii;
+	cout << "m = ";
+	cin >> m.nrColoane;
+	m.nrTriplete = 0;
+
+	Triplet t;
+	cout << "i,j,element = ";
+	cin >> t.linie >> t.coloana >> t.valoare;
+
+	while (t.linie != -1 && t.coloana != -1 && t.valoare != -1)
+	{
+		if (getElement(m, t.linie, t.coloana) == 0)
+			inserare(m, t);
+
+		cout << "i,j,element = ";
+		cin >> t.linie >> t.coloana >> t.valoare;
+	}
+}
+
+void suma(MatriceRara a, MatriceRara b, MatriceRara &c)
+{
+	int i = 0, j = 0;
+	c.nrLinii = a.nrLinii;
+	c.nrColoane = a.nrColoane;
+	c.nrTriplete = 0;
+
+	while (i < a.nrTriplete && j < b.nrTriplete)
+	{
+		if (checkMaiMica(a.triplete[i], b.triplete[j]))
+			c.triplete[c.nrTriplete++] = a.triplete[i++];
+		else
+			if (checkMaiMica(b.triplete[j], a.triplete[i]))
+				c.triplete[c.nrTriplete++] = b.triplete[j++];
+			else
+				if (a.triplete[i].valoare + b.triplete[j].valoare != 0)
+				{
+					c.triplete[c.nrTriplete].linie = a.triplete[i].linie;
+					c.triplete[c.nrTriplete].coloana = a.triplete[i].coloana;
+					c.triplete[c.nrTriplete++].valoare = a.triplete[i++].valoare + b.triplete[j++].valoare;
+				}
+				else
+				{
+					i++;
+					j++;
+				}
+	}
+
+	while (i < a.nrTriplete)
+		c.triplete[c.nrTriplete++] = a.triplete[i++];
+
+	while (j < b.nrTriplete)
+		c.triplete[c.nrTriplete++] = a.triplete[j++];
+}
+
+void tiparire(MatriceRara m)
+{
+	for (int i = 1; i <= m.nrLinii; i++)
+	{
+		for (int j = 1; j <= m.nrColoane; j++)
+			cout << getElement(m, i, j) << " ";
+		cout << endl;
+	}
+}
+
+int main()
+{
+	MatriceRara a, b, c;
+
+	cout << "Matrice A: " << endl;
+	citire(a);
+	cout << "\nMatrice B: " << endl;
+	citire(b);
+	suma(a, b, c);
+	cout << "\nA + B: " << endl;
+	tiparire(c);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

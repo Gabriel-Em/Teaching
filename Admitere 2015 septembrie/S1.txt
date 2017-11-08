@@ -1,0 +1,157 @@
+a.
+
+#include <iostream>
+
+using namespace std;
+
+int sumaCifre(int nr)
+{
+	int s = 0;
+
+	while (nr > 0)
+	{
+		s += nr % 10;
+		nr /= 10;
+	}
+
+	return s;
+}
+
+bool esteDeosebit(int nr)
+{
+	for (int i = 0; i < nr; i++)
+		if (i + sumaCifre(i) == nr)
+			return true;
+
+	return false;
+}
+
+int main()
+{
+	int n;
+
+	cout << "n = ";
+	cin >> n;
+
+	if (esteDeosebit(n))
+		cout << "Numarul este deosebit.";
+	else
+		cout << "Numarul nu este deosebit.";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+b.
+
+#include <iostream>
+using namespace std;
+
+bool verifica(int n)
+{
+	int d = 2;
+	int count = 0;
+
+	while (n > 1)
+	{
+		while (n%d == 0)
+		{
+			count++;
+			n = n / d;
+		}
+
+		if (count != 0 && count % 2 == 0)
+			return true;
+
+		d++;
+		count = 0;
+	}
+
+	return false;
+}
+
+int main()
+{
+	int nr;
+
+	cout << "n = ";
+	cin >> nr;
+
+	if (verifica(nr))
+		cout << "Numarul respecta conditia.";
+	else
+		cout << "Numarul nu respecta conditia.";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+c.
+
+#include <iostream>
+
+using namespace std;
+
+bool verificaIterativ(int n, int X[])
+{
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			if (i != j && X[i] == X[j])
+				return false;
+
+	return true;
+}
+
+bool verificaRecursiv(int n, int X[])
+{
+	if (n == 1)
+		return true;
+	else
+	{
+		int first = X[0];
+		for (int i = 1; i < n; i++)
+			if (X[i] == first)
+				return false;
+
+		return verificaRecursiv(n - 1, X + 1);
+	}
+}
+
+void citesteSir(int &n, int X[])
+{
+	cout << "n = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "X[" << i << "] = ";
+		cin >> X[i];
+	}
+}
+
+int main()
+{
+	int n, X[10000];
+
+	citesteSir(n, X);
+
+	cout << "\nIterativ:\n";
+
+	if (verificaIterativ(n,X))
+		cout << "Elementele sirului sunt distincte.";
+	else
+		cout << "Elementele sirului nu sunt distincte.";
+
+	cout << "\n\nRecursiv:\n";
+
+	if (verificaRecursiv(n, X))
+		cout << "Elementele sirului sunt distincte.";
+	else
+		cout << "Elementele sirului nu sunt distincte.";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

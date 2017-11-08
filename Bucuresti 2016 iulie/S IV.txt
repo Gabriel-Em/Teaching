@@ -1,0 +1,107 @@
+#include<iostream>
+using namespace std;
+
+void citire(int relatii[][50], int &n, int &k)
+{
+	int m;
+	cout << "n,m,k: ";
+	cin >> n >> m >> k;
+
+	cout << m <<" relatii: ";
+
+	for (int r = 1; r <= m; r++)
+	{	
+		int i, j;
+		cin >> i >> j;
+		relatii[i][j] = 1;
+		relatii[j][i] = 1;
+	}
+}
+
+int numaraPrieteni(int line[], int n)
+{
+	int count = 0;
+	for (int i = 1; i <= n; i++)
+		if (line[i] == 1)
+			count++;
+
+	return count;
+}
+void functionA(int relatii[][50], int n)
+{
+	for (int i = 1; i <= n; i++)
+		cout << numaraPrieteni(relatii[i], n) << " ";
+	cout << endl;
+}
+
+void elimina(int sir[], int &lenSir, int index)
+{
+	for (int i = index; i < lenSir - 1; i++)
+		sir[i] = sir[i + 1];
+
+	lenSir--;
+}
+void functionB(int relatii[][50], int n, int k, int rezultat[], int &lenRezultat)
+{
+	lenRezultat = 0;
+	int count[50]{ 0 };
+
+	// initializam sirul rezultat cu toti utilizatorii si memoram cu ajutorul sirului 'count' numarul de prieteni al fiecarui utilizator
+	for (int i = 1; i <= n; i++)
+	{
+		rezultat[lenRezultat++] = i;
+		int nrP = numaraPrieteni(relatii[i], n);
+		count[i] = nrP;
+	}
+
+	bool finished;
+
+	// eliminam utilizatori din multimea rezultat pana cand ramanem cu mai putin de k utilizatori sau toti utilizatorii din rezultat respecta conditia din problema
+	do 
+	{
+		finished = true;
+
+		int i = 0;
+		while (i < lenRezultat)	// parcurgem toti utilizatorii din submultimea rezultat
+		{
+			if (count[rezultat[i]] < k)	// daca un utilizator are un numar de prieteni < k | rezultat[i] = utilizatorul de pe pozitia i din rezultat
+			{
+				for (int j = 1; j < n; j++)	// decrementam numarul de prieteni memorat in count la toti prietenii utilizatorului de pe pozitia i din rezultat
+					if (relatii[rezultat[i]][j] == 1)
+						count[j]--;
+				
+				elimina(rezultat, lenRezultat, i);	// eliminam prietenul de pe pozitia i din rezultat
+				i--;	// decrementam i-ul din moment ce am eliminat utilizatorul de pe pozitia i (deci toti utilizatorii de la i+1 la final s-au mutat cu o pozitie mai in stanga) si vom sari peste un utilizator daca nu facem asta
+				finished = false;	// din moment ce am gasit un utilizator care n-a respectat conditia problemei in timpul parcurgerii curente, nu putem fii siguri ca sirul rezultat va contine doar utilizatori valizi la finalul acestei parcurgeri
+			}
+			i++;	// next utilizator
+		}
+
+		if (lenRezultat < k)	// daca in sirul rezultat avem mai putini utilizatori decat k atunci ne oprim
+			finished = true;
+
+	} while (!finished);
+}
+
+void afisare(int rezultat[], int lenRezultat, int k)
+{
+	if (lenRezultat < k)
+		cout << "NU";
+	else
+		for (int i = 0; i < lenRezultat; i++)
+			cout << rezultat[i] << " ";
+}
+int main()
+{
+	int relatii[50][50]{ 0 }, n, k, rezultat[50], lenRezultat;
+
+	citire(relatii, n, k);
+	functionA(relatii, n);
+	functionB(relatii, n, k, rezultat, lenRezultat);
+	afisare(rezultat, lenRezultat, k);
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}

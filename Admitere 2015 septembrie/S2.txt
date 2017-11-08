@@ -1,0 +1,3 @@
+a) 13
+b) 77
+c) functia returneaza cel mai mare divizor propriu al lui n

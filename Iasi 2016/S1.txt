@@ -1,0 +1,50 @@
+1.b
+2.
+a. u = 42, v = 35
+
+F(42,35) = F(21,35) | 7
+F(21,35) = F(21,7) | 7
+F(21,7) = F(7,7) | 7
+F(7,7) = 7
+
+prgramul pare sa returneze CMMDC dintre u si v
+rezolvam punctul b cu asta in minte pentru a verifica ipoteza
+
+b. u = 15, v = 10
+
+daca proramul returneaza CMMDC dintre u si v atunci 15 si 10 ar trebui sa fie 2 valori care respecta cerinta b
+
+F(15,10) = F(15,5) | 5
+F(15,5) = F(5,5) | 5
+F(5,5) = 5
+
+intr-adevar se returneaza CMMDC dintre 15 si 10
+
+c. daca u = 14, cea mai mare valoare mai mica decat 100 pentru v astfel incat F(u, v) sa returneze 7 este, daca programul returneaza CMMDC(u,v), 91
+
+F(14,91) = F(7,91) | 7
+F(7,91) = F(7,42) | 7
+F(7,42) = F(7,21) | 7
+F(7,21) = F(7,7) | 7
+F(7,7) = 7
+
+d.
+
+void F(int u, int v)
+{
+	if (u == v || u == 0 || v == 0)
+		return max(u, v);
+	else
+		if (u % 2 == 0)
+			if (v % 2 == 0)
+				return 2*F(u/2, v/2)
+			else
+				return F(u/2, v)
+		else
+			if (v % 2 == 0)
+				return F(u, v/2)
+			else
+				if(u < v)
+					return F(u, (v-u)/2)
+				else
+					return F((u-v)/2, v)

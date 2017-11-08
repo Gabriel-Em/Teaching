@@ -1,0 +1,153 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][50], int &m, int &n)
+{
+	cout << "m = ";
+	cin >> m;
+	cout << "n = ";
+	cin >> n;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+bool prim(int nr)
+{
+	if (nr == 2)
+		return true;
+	if (nr % 2 == 0 || nr < 2)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+int sufix(int nr)
+{
+	int copie = 0, p = 1;
+
+	while (nr > 9)
+	{
+		copie = nr % 10 * p + copie;
+		nr /= 10;
+	}
+
+	return copie;
+}
+
+bool multiprim(int nr)
+{
+	while (nr > 0)
+	{
+		if (!prim(nr))
+			return false;
+
+		nr = sufix(nr);
+	}
+
+	return true;
+}
+
+int cifraMaxima(int nr)
+{
+	int max = -1;
+
+	while (nr > 0)
+	{
+		if (nr % 10 > max)
+			max = nr % 10;
+
+		nr /= 10;
+	}
+
+	return max;
+}
+
+bool simpatizare(int nr1, int nr2)
+{
+	if (cifraMaxima(nr1) == cifraMaxima(nr2))
+		return true;
+
+	return false;
+}
+
+bool exista(int X[], int lenX, int element)
+{
+	for (int i = 0; i < lenX; i++)
+		if (X[i] == element)
+			return true;
+
+	return false;
+}
+
+void construireX(int X[], int &lenX, int A[][50], int m, int n)
+{
+	lenX = 0;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			if (multiprim(A[i][j]))
+				if (!exista(X, lenX, A[i][j]))
+					X[lenX++] = A[i][j];
+}
+
+void afisarePerechi(int X[], int lenX)
+{
+	bool exista = false;
+
+	for(int i =0;i<lenX-1;i++)
+		for(int j =i+1;j<lenX;j++)
+			if (simpatizare(X[i], X[j]))
+			{
+				if (X[i] < X[j])
+					cout << X[i] << " " << X[j] << endl;
+				else
+					cout << X[j] << " " << X[i] << endl;
+
+				exista = true;
+			}
+
+	if (!exista)
+		cout << "Nu exista perechi";
+}
+
+void afisare(int X[], int lenX)
+{
+	for (int i = 0; i < lenX; i++)
+		cout << X[i] << " ";
+}
+
+int main()
+{
+	int A[50][50], m, n, X[2500], lenX;
+
+	citire(A, m, n);
+	construireX(X, lenX, A, m, n);
+
+	if (lenX == 0)
+		cout << "Sirul este vid\n";
+	else
+	{
+		afisare(X, lenX);
+		cout << endl;
+	}
+
+	afisarePerechi(X, lenX);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

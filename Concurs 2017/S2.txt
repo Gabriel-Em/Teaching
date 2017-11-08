@@ -1,0 +1,61 @@
+a = 1
+b = 0
+k = 0
+nr = deoarece nu avem o valoare pentru nr putem atribui lui nr o valoare proprie, sau, putem sa repetam cat timp-ul din problema de atatea ori de cate e necesar ca sa ne dam seama ce face prolema, considerand ca conditia b < nr este mereu adevarata
+
+k = 1
+b = 1
+a = 0
+
+k = 2
+b = 1
+a = 1
+
+k = 3
+b = 2
+a = 1
+
+k = 4
+b = 3
+a = 2
+
+k = 5
+b = 5
+a = 3
+
+k = 6
+b = 8
+a = 5
+
+k = 7
+b = 13
+a = 8
+
+observam ca se genereaza numerele din sirul lui fibbonaci (in special suntem atenti la variabila a care contine in ordine valorile 0 1 1 2 3 5 8 13, etc)
+
+deci, pentru nr = 1, ni se returneaza k = 1 (0)
+      pentru nr = 3, ni se returneaza k = 4 (0 1 1 2)
+      pentru nr = 10, ni se returneaza k = 7 (0 1 1 2 3 5 8)
+
+din cazurile de mai sus ne dam seama ca algoritmul returneaza numarul de termeni din sirul lui fibbonaci mai mici decat numarul primit ca parametru
+
+b) deoarece sunt 7 termeni in sirul lui fibonnaci mai mici decat 10 (0 1 1 2 3 5 8), raspunsul este 7
+c)
+
+subalgoritm f(a, b, nr):
+	daca b < nr executa
+		return 1 + f(b, a + b, nr)
+	altfel
+		return 0
+
+
+
+echivalent cu:
+
+subalgoritm f(a, b, nr):
+	daca b < nr executa
+		b <- a + b
+		a <- b - a
+		return 1 + f(a, b, nr)
+	altfel
+		return 0

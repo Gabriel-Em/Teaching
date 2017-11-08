@@ -1,0 +1,114 @@
+#include<iostream>
+using namespace std;
+
+void citireMatrice(int matrice[][50], int &lungime)
+{
+	cout << "lungime = ";
+	cin >> lungime;
+
+	for (int i = 0; i < lungime; i++)
+		for (int j = 0; j < lungime; j++)
+		{
+			cout << "marice[" << i << "][" << j << "] = ";
+			cin >> matrice[i][j];
+		}
+}
+
+void tiparireMatrice(int matrice[][50], int lungime)
+{
+	for (int i = 0; i < lungime; i++)
+	{
+		for (int j = 0; j < lungime; j++)
+			cout << matrice[i][j] << " ";
+		cout << endl;
+	}
+}
+
+bool prim(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr < 2 || nr % 2 == 0)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+int transformareNumar(int nr)
+{
+	int body = 0, p = 1;
+	while (nr > 9)
+	{
+		body = nr % 10 * p + body;
+		p *= 10;
+		nr /= 10;
+	}
+
+	return body * 10 + nr;
+}
+
+bool superprim(int nr)
+{
+	int copie = nr;
+
+	if (prim(nr))
+		return true;
+
+	nr = transformareNumar(nr);
+
+	while (nr != copie)
+	{
+		if (prim(nr))
+			return true;
+		transformareNumar(nr);
+	}
+
+	return false;
+}
+
+void interschimbareElemente(int matrice[][50], int i, int j, int k, int p)
+{
+	matrice[i][j] = matrice[i][j] + matrice[k][p];
+	matrice[k][p] = matrice[i][j] - matrice[k][p];
+	matrice[i][j] = matrice[i][j] - matrice[k][p];
+}
+
+void interschimbareSusJos(int matrice[][50], int n)
+{
+	for(int i =0;i<n/2;i++)
+		for (int j = 0; j < n; j++)
+			if (i < j && i + j < n - 1)	// deasupra diagonalei principale si secundare
+				interschimbareElemente(matrice, i, j, n - i - 1, j);
+}
+
+void interschimbareStangaDreapta(int matrice[][50], int n)
+{
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n / 2; j++)
+			if (i > j && i + j < n - 1)	// sub diagonala principala si deasupra de deagonala secundara
+				if (superprim(matrice[i][j]) && superprim(matrice[i][n - j - 1]))
+					interschimbareElemente(matrice, i, j, i, n - j - 1);
+}
+
+int main()
+{
+	int A[50][50], n;
+
+	citireMatrice(A, n);
+	interschimbareSusJos(A, n);
+	interschimbareStangaDreapta(A, n);
+	tiparireMatrice(A, n);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

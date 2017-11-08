@@ -1,0 +1,86 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][50], int &m, int &n)
+{
+	cout << "linii = ";
+	cin >> m;
+	cout << "coloane = ";
+	cin >> n;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+void inserare(int sir[], int &lenSir, int element)
+{
+	sir[lenSir++] = element;
+}
+
+void parcurgereSusJos(int mat[][50], int nrLinii, int coloana, int sir[], int &lenSir)
+{
+	for (int i = 0; i < nrLinii; i++)
+		inserare(sir, lenSir, mat[i][coloana]);
+}
+
+void parcurgereJosSus(int mat[][50], int nrLinii, int coloana, int sir[], int &lenSir)
+{
+	for (int i = nrLinii - 1; i >= 0; i--)
+		inserare(sir, lenSir, mat[i][coloana]);
+}
+
+void parcurgereStangaDreapta(int mat[][50], int nrColoane, int linie, int sir[], int &lenSir)
+{
+	for (int i = 0 ; i < nrColoane; i++)
+		inserare(sir, lenSir, mat[linie][i]);
+}
+
+void parcurgereDreaptaStanga(int mat[][50], int nrColoane, int linie, int sir[], int &lenSir)
+{
+	for (int i = nrColoane - 1; i >= 0; i--)
+		inserare(sir, lenSir, mat[linie][i]);
+}
+
+void construireSir(int mat[][50], int m, int n, int sir[], int &lenSir)
+{
+	lenSir = 0;
+
+	for (int i = 0; i < n; i++)	// pentru fiecare coloana
+	{
+		if (i % 2 == 0)
+			parcurgereSusJos(mat, m, i, sir, lenSir);
+		else
+			parcurgereJosSus(mat, m, i, sir, lenSir);
+	}
+
+	for (int i = 0; i < m; i++)	// pentru fiecare linie
+	{
+		if (i % 2 == 0)
+			parcurgereStangaDreapta(mat, n, i, sir, lenSir);
+		else
+			parcurgereDreaptaStanga(mat, n, i, sir, lenSir);
+	}
+}
+
+void afisare(int sir[], int lenSir)
+{
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << " ";
+}
+
+int main()
+{
+	int mat[50][50], m, n, sir[2500], lenSir;
+
+	citire(mat, m, n);
+	construireSir(mat, m, n, sir, lenSir);
+	afisare(sir, lenSir);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

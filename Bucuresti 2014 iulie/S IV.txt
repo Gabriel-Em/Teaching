@@ -1,0 +1,257 @@
+#include <iostream> 
+using namespace std;
+
+int getQuarter(int size, int n)
+{
+	int quarter = 0;
+	int coveredArea = size / 4;
+
+	while (n > coveredArea)
+	{
+		quarter++;
+		coveredArea += size / 4;
+	}
+
+	return quarter;
+}
+
+int calculateHighLimit(int n)
+{
+	int p = 1;
+
+	while (p < n)
+		p *= 4;
+
+	return p;
+}
+
+/*
+	Explicatie B:
+
+	algoritmul returneaza cifra de pe pozitia n din sirul s generat dupa regual din cerinta
+	se observa ca sirul S e creat din grupuri de forma 1221, puteri ale lui 4
+	asta inseamna ca: 
+	- primele 4 cifre din s sunt 1221
+	- primele 16 cifre din s sunt 4 grupuri de forma 1221, unde 1 reprezinta un grup de forma 1221 si 2 reprezinta
+	un grup invers lui 1221, deci 2112 [cu alte cuvinte, primele 16 cifre din s ar fi 1 = 1221, 2 = 2112, 2 = 2112 si
+	1 = 1221]
+	- primele 64 cifre din s reprezinta 4 grupuri de forma 1221, unde 1 reprezinta un grup de 16 cifre generat dupa
+	regula de mai sus si 2 inseamna inversul unui grup de 16 cifre
+	- si asa mai departe
+
+	stiind asta putem sa aflam cifra de pe pozitia n relativ rapid folosind niste variabile dupa cum urmeaza:
+
+	highLimit = cea mai mica putere a lui 4 >= n
+	quarter = grupul de 4 cifre din care face parte n (o sa intelegi mai jos)
+	inverted = o variabila booleana care ne spune daca suntem intr-un grup de forma 1221 sau 2112
+
+	sa luam 2 exemple:
+
+	[EXEMPLUL 1 - pentru n = 11]
+
+	highLimit = 16 (16 = 4^2, care e cea mai mica putere a lui 4 >= 11)
+	ne imaginam sirul de 16 elemente ca un sir de forma 1221, in care 1 = 4 elemente (1221) si 2 = 4 elemente (2112)
+	fiecare din cele 4 grupuri reprezinta un quarter
+	1 = cifrele de pe pozitia 1 pana la 4 (quarter 0) [1221]
+	2 = cifrele de pe pozitia 5 pana la 8 (quarter 1) [2112]
+	2 = cifrele de pe pozitia 9 pana la 12 (quarter 2) [2112]
+	1 = cifrele de pe pozitia 13 pana la 16 (quarter 3) [1221]
+
+	n apartine lui quarter 2 deoarece 11 se afla printre cifrele de pe pozitia 9 pana la 12
+
+	deci grupul nostru de 16 cifre este scris de forma 1221 si n se afla in quarter 2, adica
+	                                                   0123
+													     ^
+														aici
+
+	deoarece quarter 2 e cifra 2 si mai sus am spus ca fiecare element 1 din 16 reprezinta un grup de forma (1221) si
+	fiecare 2 reprezinta un grup de forma (2112), grupul in care ne aflam e un grup de forma 2112, asa ca setam variabila
+	inverted pe true
+
+	miscoram highLimit prin impartire la 4
+	highLimit = highLimit/4 = 4
+
+	n va deveni n%4 deoarece ne intereseaza pozitia cifrei din quarter 2 (cifrele de la 9 la 12) la care pointeaza n,
+	adica cifra a 3-a
+	
+	n=n%4=3
+
+	deoarece highLimit e 4, ne oprim si verificam variabila inverted
+
+	sirul nostru original era s1=[1,2,2,1] din care ar trebui sa returnam cifra a 3-a (adica cea de pe pozitia 2), dar
+	                              0 1 2 3
+
+	deoarece variabila inverted e true, vom returna cifra inversa lui 2 adica 1
+
+	a 11-a cifra din s este 1
+
+
+	[EXEMPLUL 2 pentru n = 20]
+
+	highLimit = 64 deoarece 64 = 4^3 care e cea mai mica putere a lui 4 mai mare decat 20
+
+	ne imaginam cele 64 de cifre ca fiind formate dintr-un grup de forma 1221. Fiecare 1 reprezinta un grup de 16 cifre
+	format din alte 4 grupuri de 4 cifre. Un 1 din grupul de 64 reprezinta un grup de forma 1221 de 16 cifre. Un 2 din
+	grupul de 64 reprezinta un gurp de forma 2112 de 16 cifre. Un 1 din grupul de 16 reprezinta un grup de forma 1221
+	din 4 cifre, iar un 2 din grupul de 16 cifre reprezinta un grup de forma 2112 de 4 cifre.
+
+	regula de mai sus se aplica indiferent cat de mare e sirul S
+
+	Exemplu: daca S are 1024 de cifre, atunci grupul de 1024 de cifre va fi imaginat ca un grup de forma 1221 unde
+
+	1 - un grup de 256 de cifre de forma 1221
+	2 - un grup de 256 de cifre de forma 2112
+	2 - un grup de 256 de cifre de forma 2112
+	1 - un grup de 256 de cifre de forma 1221
+
+	apoi, grupul de 256 de cifre de forma 1221 va fi imaginat ca un grup de forma 1221 unde
+
+	1 - un grup de 64 de cifre de forma 1221
+	2 - un grup de 64 de cifre de forma 2112
+	2 - un grup de 64 de cifre de forma 2112
+	1 - un grup de 64 de cifre de forma 1221
+
+	si un grup de 256 de cifre de forma 2112 va fi imaginat ca un grup de forma 2112 unde
+
+	2 - un grup de 64 de cifre de forma 2112
+	1 - un grup de 64 de cifre de forma 1221
+	1 - un grup de 64 de cifre de forma 1221
+	2 - un grup de 64 de cifre de forma 2112
+
+	apoi, un grup de 64 de forma 1221 va fi un grup de forma 1221 unde
+
+	1 - un grup de 16 cifre de forma 1221
+	2 - un grup de 16 cifre de forma 2112
+	.....
+	etc
+
+	pana la un grup de 4 cifre de forma 1221 care e literally grupul 1221 unde
+
+	1 = 1
+	2 = 2
+	2 = 2
+	1 = 1
+
+	si un grup din 4 cifre de forma 2112 care e grupul 2112
+
+	revenind la exemplul cu 20 de cifre, 64 era scris sub forma 1221 unde 1 = grup de forma 1221 de 16 cifre si 2 =
+	grup de forma 22112 de 16 cifre
+
+	ca si in primul exemplu, trebuie sa aflam quarter
+	highLimit = 64 si n = 20, iar
+
+	quarter 0 = cifrele de la 1 la 16
+	quarter 1 = cifrele de la 17 la 32
+	quarter 2 = cifrele de la 33 la 48
+	quarter 3 = cifrele de la 49 la 64
+
+	n se afla in quarter 1, deci, in grupul de 64 scris de forma 1221, n se afla
+																 0123
+																  ^
+																 aici
+	reducem grupul de 64 la un grup de 16 (highLimit = highLimit / 4) si setam variabila inverted pe true
+	deoarece quarter 1 e un 2, grupul de 16 va fi scris de forma 2112
+	ne intereseaza pe ce pozitie este n = 20 in quarter 1, deci n = n%4 = 4
+
+	cautam din nou in ce quarter se afla n = 4 in grupul de 16 scris de forma 2112
+
+	quarter 0 = cifrele de la 1 la 4
+	quarter 1 = cifrele de la 5 la 8
+	quarter 2 = cifrele de la 9 la 12
+	quarter 3 = cifrele de la 13 la 16
+
+	n se afla in quarter 0 (n fiind 4), deci, pentru grupul de 16 de forma 2112, n se afla
+	                                                                       0123
+																		   ^
+																		  aici
+	reducem grupul de 64 la un grup de 4 (highLimit = highLimit /4) si setam variabila inverted pe true
+	deoarece quarter 0 e un 2, grupul de 4 va fi scris de forma 2112
+	fiindca highLimit a ajuns 4 ne oprim si ne uitam la variabila inverted
+
+	sirul original = [1,2,2,1], n = 4, inverted = true, deci va trebui sa afisam inversul cifrei a 4-a (adica de pe
+	                  0 1 2 3
+	pozitia 3) din sirul original.
+
+	Cifra a 20-a este 2
+
+	Algoritmul se executa de un numar redus de ori, avand in vedere ca la fiecare pas se reduce high limit de la o
+	putere a lui 4 la alta.
+
+	Pentru cifra de pe pozitia 1.048.576, algoritmul ar trebui sa execute doar 9 pasi. Pentru n = 11 s-a executat un
+	singur pas (reducerea de la grupul de 16 la grupul de 4), iar pentru n = 20 s-au executat 2 pasi (reducerea de la
+	grupul de 64 la grupul de 16 si apoi la grupul de 4)
+*/
+
+int solveB(int s1[], int n)
+{
+	int highLimit = calculateHighLimit(n);
+	bool inverted = false;
+
+	while (highLimit > 4)
+	{
+		int quarter = getQuarter(highLimit, n);
+
+		if (!inverted)
+		{
+			if (s1[quarter] == 2)
+				inverted = true;
+		}
+		else
+		{
+			if (s1[quarter] == 2)
+				inverted = false;
+		}
+
+		highLimit /= 4;
+		if (n > highLimit)
+		{
+			n = n%highLimit;
+
+			if (n == 0)
+				n = highLimit;
+		}
+	}
+
+	if (inverted)
+		if (s1[n - 1] == 1)
+			return 2;
+		else
+			return 1;
+	else
+		return s1[n - 1];
+}
+
+void solveA(int s1[], int n)
+{
+	for (int i = 1; i <= n; i++)
+		cout << solveB(s1, i);
+}
+
+void readS(int s1[])
+{
+	cout << "Introduceti primele 4 cfre ale sirului s:\n\n";
+
+	for (int i = 0; i < 4; i++)
+	{
+		cout << "S1[" << i + 1 << "] = ";
+		cin >> s1[i];
+	}
+}
+int main()
+{
+	int s1[4], n;
+	
+	readS(s1);
+
+	cout << "\nPentru afisarea primelor n cifre ale sirului s introduceti n: ";
+	cin >> n;
+	cout << "s = ";
+	solveA(s1, n);
+	cout << "\n\nPentru afisarea cifrei de pe pozitia n din sir introduceti n: ";
+	cin >> n;
+	cout << "Cifra de pe pozitia " << n << " din s este " << solveB(s1, n) << endl;
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

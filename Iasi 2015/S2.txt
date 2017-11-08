@@ -1,0 +1,171 @@
+4.
+
+#include<iostream>
+using namespace std;
+
+void citire(int &n, int &p)
+{
+	cout << "n = ";
+	cin >> n;
+	cout << "p = ";
+	cin >> p;
+}
+
+bool validate(int n, int p)
+{
+	if (n < 4 || n % 4 != 0)
+		return false;
+
+	if (p<1 || p > n / 2)
+		return false;
+
+	return true;
+}
+
+void partitioneaza(int a[], int b[], int &lenA, int &lenB, int n)
+{
+	lenA = 0;
+	lenB = 0;
+
+	// pentru partitionare vom pune primele p/2 elemente impare in A si primele p/2 elemente pare in b, apoi
+	// urmatoarele p/2 elemente pare in A si urmatoarele p/2 elemente impare in B
+
+	for (int i = 1; i <= n; i++)
+	{
+		if (i <= n / 2)
+			if (i % 2 == 1)
+				a[lenA++] = i;
+			else
+				b[lenB++] = i;
+		else
+			if (i % 2 == 0)
+				a[lenA++] = i;
+			else
+				b[lenB++] = i;
+	}
+}
+
+void afisare(int sir[], int lenSir)
+{
+	cout << "{";
+
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << ",";
+
+	cout << "\b}";
+}
+
+void eliminare(int sir[], int &lenSir, int pozitie)
+{
+	for (int i = pozitie; i < lenSir - 1; i++)
+		sir[i] = sir[i + 1];
+
+	lenSir--;
+}
+
+void insereaza(int sir[], int &lenSir, int element)
+{
+	if (lenSir == 0 || element > sir[lenSir - 1])
+		sir[lenSir] = element;
+	else
+	{
+		int i = 0;
+		while (i < lenSir && sir[i] < element)
+			i++;
+
+		for (int j = lenSir; j > i; j--)
+			sir[j] = sir[j - 1];
+
+		sir[i] = element;
+	}
+
+	lenSir++;
+}
+
+bool eliminaSiRepartitioneaza(int a[], int &lenA, int b[], int &lenB, int p)
+{
+	if (p % 2 == 1)	// daca p e impar nu e posibila repartitionarea
+		return false;
+
+	int pozEinB = 0;
+
+	while (pozEinB < lenB && b[pozEinB] != p)
+		pozEinB++;
+
+	eliminare(b, lenB, pozEinB);	// daca p e par, p se va afla MEREU in B, deci il eliminam din B
+
+	/*
+		daca p/2 e impar, atunci garantat il vom gasi pe p/2 in A si va trebui sa-l mutam in B
+
+		ex: daca p = 6 si am eliminat 6 din B, diferenta dintre A si B e 6. Deoarece 6/2 = 3 (deci impar) stim ca
+			3 se afla in A deci il mutam pe 3 din A in B egaland suma elementelor din A si B
+
+		pozitia pe care se afla p/2 in A va fi mereu p/2/2, asa ca inseram elementul de pe pozitia p/2/2 din A in B
+		si apoi eliminam acel element din A
+	*/
+
+	if (p / 2 % 2 == 1)
+	{
+		insereaza(b, lenB, a[p / 2 / 2]);
+		eliminare(a, lenA, p / 2 / 2);
+	}
+	else
+	{
+		/*
+		Daca p/2 e par, atunci garantat vom gasi in A 2 elemente impare a caror suma e p si vom gasi in B un element
+		impar egal cu p/2. Va trebui sa mutam cele 2 elemente din A in B precum si elementul mentionat din B in A
+
+		ex: daca p = 8, atunci garantat in A se vor afla 3 si 5 si in B se va gasi 4, deci, pentru a egala suma, va
+			trebui sa mutam 3 si 5 din A in B si 4 din B in A
+
+		pozitia pe care se vor afla cele 2 elemente din A va fi mereu p/2/2 si p/2/2-1, asa ca inseram in B elementele
+		de pe pozitiile p/2/2 si p/2/2-1 din A si apoi eliminam acele elemente din A
+
+		pozitia pe care se afla elementul din B (dupa inserarea celor 2 elemente din A in B) va fi mereu p/2/2, asa ca
+		inseram in A elementul de pe pozitia p/2/2 din B si eliminam acel element din B
+
+		Regulile de mai sus se aplica indiferent de N >= 4 multiplu de 4 si 1<=p<=n/2 (adica conditiile initiale impuse
+		de problema)
+		*/
+
+		insereaza(b, lenB, a[p / 2 / 2]);
+		insereaza(b, lenB, a[p / 2 / 2 - 1]);
+		eliminare(a, lenA, p / 2 / 2);
+		eliminare(a, lenA, p / 2 / 2-1);
+		insereaza(a, lenA, b[p / 2 / 2]);
+		eliminare(b, lenB, p / 2 / 2);
+	}
+}
+
+int main()
+{
+	int n, p, a[48], b[48], lenA, lenB;
+
+	citire(n, p);
+
+	if (!validate(n, p))
+		cout << "Date invalide.";
+	else
+	{
+		partitioneaza(a, b, lenA, lenB,n);
+		cout << "\nA: ";
+		afisare(a, lenA);
+		cout << "\nB: ";
+		afisare(b, lenB);
+
+		if (eliminaSiRepartitioneaza(a, lenA, b, lenB, p))
+		{
+			cout << "\nDupa eliminarea lui " << p << " partitiile modificate sunt: ";
+			cout << "\nA: ";
+			afisare(a, lenA);
+			cout << "\nB: ";
+			afisare(b, lenB);
+		}
+		else
+			cout << "\nPartitie inexistenta";
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

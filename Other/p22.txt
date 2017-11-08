@@ -1,0 +1,87 @@
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lenSir)
+{
+	cout << "lungime = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+bool patratPerfectRecursiv(int nr, int odd, int sum)	// suma de numere impare consecutive incepand de la 1 da rezultat un patrat perfect
+{
+	if (sum > nr)
+		return false;
+	else
+		if (sum == nr)
+			return true;
+		else
+			return patratPerfectRecursiv(nr, odd + 2, sum + odd);
+}
+
+void afisarePatratePerfecte(int sir[], int lenSir, bool exista)
+{
+	if (lenSir > 0)
+	{
+		if (patratPerfectRecursiv(sir[0], 1, 0))
+		{
+			cout << sir[0] << " ";
+			exista = true;
+		}
+
+		afisarePatratePerfecte(sir + 1, lenSir - 1, exista);
+	}
+	else
+		if (!exista)
+			cout << "Nu exista";
+
+}
+
+int sumaRecursiv(int nr)
+{
+	if (nr > 0)
+		return nr % 10 + sumaRecursiv(nr / 10);
+	else
+		return 0;
+}
+
+void inlocuireNumere(int sir[], int lenSir)
+{
+	if (lenSir > 0)
+	{
+		if (sir[lenSir - 1] < 0)
+			sir[lenSir - 1] = -sir[lenSir - 1];
+
+		sir[lenSir - 1] = sumaRecursiv(sir[lenSir - 1]);
+		inlocuireNumere(sir, lenSir - 1);
+	}
+}
+
+void afisare(int sir[], int lenSir)
+{
+	if (lenSir > 0)
+	{
+		cout << sir[0] << " ";
+		afisare(sir + 1, lenSir - 1);
+	}
+}
+
+int main()
+{
+	int X[100], n;
+
+	citire(X, n);
+	afisarePatratePerfecte(X, n, false);
+	inlocuireNumere(X, n);
+	cout << endl;
+	afisare(X, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

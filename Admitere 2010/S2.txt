@@ -1,0 +1,43 @@
+a) n = 1 -> afiseaza 0
+   n = 10 -> afiseaza 7
+
+Algoritmul afiseaza suma divizorilor proprii ai lui n
+
+b) 
+Algoritm Ce_Face;
+	Citeste n (n>0, natural);
+	S <- 0;
+	Pentru k = 2,n-1,1 executa
+		daca n mod k = 0 atunci
+			S <- S + k
+		SfDaca
+	SfPentru
+	Tipareste S
+SfAlgoritm
+
+c)
+Algoritm Ce_Face;
+	Citeste n (n>0, natural);
+	S <- 0;
+	k <- 2;
+	Pentru k = 2,sqrt(n),1 executa
+		daca n mod k = 0 atunci
+			S <- S + k
+			d <- n/k
+			daca d =/= k atunci
+				S <- S + d
+			SfDaca
+		SfDaca
+	SfPentru
+	Tipareste S
+SfAlgoritm
+
+
+28
+
+2 4 7 14
+
+9
+3
+
+s = 3

@@ -1,0 +1,113 @@
+#include <iostream>
+
+using namespace std;
+
+void citire(int &n, int X[])
+{
+	cout << "n = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "X[" << i << "] = ";
+		cin >> X[i];
+	}
+}
+
+bool cifraComuna(int nr1, int nr2)
+{
+	int cifreNr1[10]{ 0 };
+
+	while (nr1 > 0)
+	{
+		cifreNr1[nr1 % 10]++;
+		nr1 /= 10;
+	}
+
+	while (nr2 > 0)
+	{
+		if(cifreNr1[nr2%10] != 0)
+			return true;
+		nr2 /= 10;
+	}
+
+	return false;
+}
+
+bool estePerfect(int Xi, int X[], int n)
+{
+	if (Xi == n - 1)
+		return false;
+
+	for (int i = Xi + 1; i < n; i++)
+		if (!cifraComuna(X[Xi], X[i]))
+			return false;
+
+	return true;
+}
+
+void inserare(int X[], int &n, int poz, int val)
+{
+	for (int i = n; i > poz; i--)
+		X[i] = X[i - 1];
+
+	X[poz] = val;
+	n++;
+}
+
+void inserareDivizori(int X[], int &n)
+{
+	for (int i = 0; i < n; i++)
+		if (estePerfect(i, X, n))
+		{
+			int poz = i, d = X[i] - 1;
+
+			while (d > 1)
+			{
+				while (X[i] % d != 0)
+					d--;
+
+				if (d != 1)
+				{
+					inserare(X, n, ++poz, d);
+					d--;
+				}
+			}
+			i = poz;
+		}
+}
+
+void creeazaO(int O[], int X[], int &n)
+{
+	int count[200] = {0};
+
+	for(int i =0;i<n-1;i++)
+		for (int j = i + 1; j < n; j++)
+			if (X[i] > X[j])
+				count[j]++;
+			else
+				count[i]++;
+
+	for (int i = 0; i < n; i++)
+		O[count[i]] = i + 1;
+}
+
+void afiseazaXdupaO(int O[], int X[], int n)
+{
+	for (int i = 0; i < n; i++)
+		cout << X[O[i] - 1] << " ";
+}
+
+int main()
+{
+	int n, X[200], O[200];
+
+	citire(n, X);
+	inserareDivizori(X, n);
+	creeazaO(O, X, n);
+	afiseazaXdupaO(O, X, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

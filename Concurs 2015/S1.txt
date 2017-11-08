@@ -1,0 +1,123 @@
+a)
+
+#include<iostream>
+using namespace std;
+
+float stuff(float epsilon)
+{
+	int factorial = 1;
+	float X = 1, prevX = 0;
+	int n = 1;
+	while (X - prevX >= epsilon)
+	{
+		factorial *= n++;
+		prevX = X;
+		X = X + (float)1 / factorial;
+	}
+	
+	return X;
+}
+
+int main()
+{
+	cout<<stuff(0.0005);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+b)
+
+#include <iostream>
+using namespace std;
+
+int sumaCifre(int n)
+{
+	int s = 0;
+
+	while (n > 0)
+	{
+		s += n % 10;
+		n /= 10;
+	}
+
+	return s;
+}
+
+void selectionSort(int sir[], int lenSir)
+{
+	int pozMin;
+
+	for (int i = 0; i < lenSir - 1; i++)
+	{
+		if (sir[i] % 2 == 0)
+		{
+			pozMin = i;
+
+			for (int j = i + 1; j < lenSir; j++)
+				if (sir[j] % 2 == 0 && sumaCifre(sir[j]) > sumaCifre(sir[pozMin]))
+					pozMin = j;
+
+			int aux = sir[pozMin];
+			sir[pozMin] = sir[i];
+			sir[i] = aux;
+		}
+	}
+}
+
+void citireSir(int sir[], int &lenSir)
+{
+	cout << "lungime = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+void afisareSir(int sir[], int lenSir)
+{
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << " ";
+}
+
+int main()
+{
+	int X[100], n;
+
+	citireSir(X, n);
+	selectionSort(X, n);
+	afisareSir(X, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+c)
+
+int magicR(int n, int a[], int y)
+{
+	if (n == 0)
+		return a[0];
+	else
+		return a[0] * pow(y, n) + magicR(n - 1, a + 1, y);
+}
+
+int magicI(int n, int a[], int y)
+{
+	int endResult = a[n];
+
+	int maxN=n;
+
+	while(n!=0)
+	{
+		n--;
+		endResult += a[n] * pow(y, maxN-n);
+	}
+
+	return endResult;
+}

@@ -1,0 +1,80 @@
+n = 4
+x = 1
+v = 0
+i = 0
+
+pasul 1:
+
+a = 1
+v = 1
+i = 1
+
+pasul 2:
+a = 8
+v = 9
+i = 2
+
+pasul 3:
+
+a = 0
+v = 9
+i = 3
+
+pasul 4:
+a = -4
+v = 5
+i = 4
+
+pasul 5:
+a = -3
+v = 2
+i = 5
+
+Scrie 2
+
+b.
+
+n = 6
+x = -1
+
+v = 0
+i = 0
+
+pasul 1:
+a = -1
+v = -1
+i = 1
+
+pasul 2:
+a = 3
+v = 4
+i = 2
+
+pasul 3:
+a = 0
+v = -4
+i = 3
+
+pasul 4:
+a = 5
+v = 9
+i = 4
+
+pasul 5:
+a = -2
+v = -11
+i = 5
+
+pasul 6:
+a = 4
+v = 15
+i = 6
+
+pasul 7:
+a = -8
+v = -23
+i = 7
+
+Scrie -23
+
+c. 3 1 7 -9  98 -96

@@ -1,0 +1,599 @@
+TIP DE DATE:
+
+Un tip de date reprezinta tipul de informatie care poate fi stocat intr-o variabila.
+Exemple:
+char - stocheaza numere pe 8 biti. Aceste numere pot fi echivalente cu reprezentarea lor sub forma de caractere din tabelul ASCII ('a','b','c')
+int - stocheaza numere intregi pe 32 biti (1,2,3)
+
+PROBLEMA DE CAUTARE:
+
+Fie un tablou unidimensional X cu n elemente si o valoare k. Precizati daca k este un element al sirului X.
+1. cautare secventiala intr-un sir ordonat
+
+subalgoritm(X,n,k):
+	i <- 0
+	gasit <- 0
+	gata <- 0
+	Cat timp i < n si gata = 0 executa
+		daca X[i] = k atunci
+			gasit = 1
+			gata = 1
+		altfel
+			daca X[i] > k atunci
+				gata = 1
+			altfel
+				i <- i + 1
+	sfCT
+
+	Daca gasit = 1
+		returneaza 1
+	altfel
+		returneaza 0
+
+complexitate: O(n)
+
+2. cautare binara intr-un si ordonat
+
+subalgoritm(X,k,s,d):
+	daca (s>d)
+		return 0
+	m <- s+d/2
+	daca k > X[m] atunci
+		subalgoritm(X,k,m+1,d)
+	altfel
+		daca k < X[m] atunci
+			subalgoritm(X,k,s,m-1)
+		altfel
+			return 1
+
+complexitate O(log2(n))
+
+1 5 9 10 12 17 23 98 139
+0 1 2 3  4  5  6  7  8
+
+s = 0
+d = 8
+
+k = 8
+
+m = 12
+s = 0
+d = 3
+
+m = 5
+s = 2
+d = 3
+
+m = 8 = k => GASIT
+
+k = 15
+
+m = 12
+s = 5
+d = 8
+
+m = 23
+s = 5
+d = 5
+
+m = 17
+s = 5
+d = 4
+
+s>d => k NU EXISTA IN X
+
+complexitate pe scurt = cum scaleaza un algoritm din punct de vedere al memoriei/timpului de executie pe masura ce dimensiunea datelor folosite de acesta creste
+
+Complexitatea reprezinta puterea de calcul necesara implementarii unui algoritm. Ea are doua componente principale, si anume complexitatea in timp si cea în spatiu. Complexitatea in spatiu se refera la volumul de memorie necesar calculelor, iar cea in timp se refera la timpul necesar efectuarii calculelor, ambele fiind exprimate ca functii de n, unde n este marimea datelor de intrare.
+
+remember: logb(x)=y   =>   b^y=x
+
+O(log2(n))  
+exemplu:
+
+s = [1,2,3,4,5,6,7,8], n = 8 (lungime)
+log2(n) = x => log2(8)=x => 2^x=8 => x = 3, cu alte cuvinte, daca am vrea sa spargem sirul s in jumatate pana cand nu s-ar mai putea sparge, ar trebui sa o facem de 3 ori (lungime 8 => lungime 4, lungime 4 => lungime 2, lungime 2 => lungime 1)
+
+SUBPROGRAME SI PARAMETRII TRIMISI PRIN REFERINTA SI VALOARE:
+
+Subprogramele sunt parti ale unui program, identificabile prin nume, care se pot activa la cerere prin intermediul acestor nume.
+
+void valoare(int x)
+{
+	x++;
+}
+
+void referinta(int &x)
+{
+	x++;
+}
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int x = 3;
+
+	cout<<x<<" ";		// 3
+	valoare(x);		
+	cout<<x<<" ";		// 3
+	referinta(x);		
+	cout<<x<<" ";		// 4
+}
+
+NOTIUNEA DE VARIBILA SI VARIABILE STATICE SAU DINAMICE:
+
+o variabila este o marime de un anumit tip de date care-si poate schimba valoarea de mai multe ori in timpul executiei unui program
+
+variabile statice: Variabilele care sunt alocate in memoria programului. Valoarea lor nu se pierde pana cand blocul de cod in care au fost declarate este eliminat din memorie si sunt accesibile doar in interiorul blocului de cod in care au fost declarate.
+
+#include<iostream>
+using namespace std;
+
+void functie(int a)
+{
+	static int x;
+	int y = 0;
+
+	cout << "before x: " << x<<endl;
+	cout << "before y: " << y<<endl;
+
+	x += a;
+	y += a;
+
+	cout << "after x: " << x<<endl;
+	cout << "after y: " << y << "\n\n";
+}
+
+int main()
+{
+	functie(2);
+	// before x: 0
+	// before y: 0
+	// after x: 2
+	// after y: 2
+
+	functie(2);
+	// before x: 2
+	// before y: 0
+	// after x: 4
+	// after y: 2
+
+	functie(2);
+	// before x: 4
+	// before y: 0
+	// after x: 6
+	// after y: 2
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+variabile dinamice: variabile a caror perioada de existenta este stabilita de catre programator. Sunt alocate la cerere, dinamic si sunt distruse atunci cand nu mai sunt referite de nicaieri.
+
+#include<iostream>
+using namespace std;
+
+
+int main()
+{
+	int *a = new int;
+	
+	*a = 5;
+
+	cout << a << " " << *a << endl << endl;
+
+	delete(a);
+	a = NULL;
+
+	int *b = new int[3];
+
+	b[0] = 9;
+	b[1] = 8;
+	b[2] = 7;
+
+	cout << b << " " << *b << endl;
+	b++;
+	cout << b << " " << *b << endl;
+	b++;
+	cout << b << " " << *b << endl;
+	b--;
+	b--;
+	delete[] b;
+	b = NULL;
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+CONSTANTE
+
+constanta = o variabila care nu-si poate schimba valoarea, ea avand o valoare fixa pe tot parcursul executiei programului
+
+int x;			// x neinitializat
+const int y;		// EROARE - constantele trebuie initializate cu o valoarea dupa declarare
+const int z = 3;	// z are valoarea 3
+
+x = 7;			// x are valoarea 7
+z = 29;			// EROARE - constantele nu isi pot schimba valoarea
+
+TABLOURI DE DATE:
+
+tabloul de date = o structura de date care reprezinta o colectie de obiecte de acelasi tip reunite sub un singur nume
+
+tablou unidimensional =  este o colectie structurata de elemente care pot fi accesate individual specificand pozitia elementului printr-un indice reprezentat de o constanta intreaga.
+
+ex int v[10] = {1,2,3,4,5,6,7,8,9,10}
+
+v[5] = 6
+
+trimiterea prin parametru
+
+void afisare(int v[], int n)
+{
+	for(int i = 0; i < n; i++)
+		cout << v[i] << " ";
+}
+
+tablou bidimensional = colectie structurata de elemente care pot fi accesate individual specificand pozitia elementului prin 2 indici reprezentati de o constanta intreaga deoarece tabloul are 2 dimensiuni.
+
+ex int v[2][2] = { {1,2}, {3,4} }
+
+v[1][0] = 3
+
+void afisare(int v[][2], int n, int m)
+{
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < m; j++)
+			cout << v[i][j] << " ";
+
+		cout << endl;
+	}
+}
+
+PARAMETRII FORMALI VS EFECTIVI:
+
+Parametrii formali = parametrii declarati in antetul unei functii care nu reprezinta valori concrete ci numai tin locul acestora. Ei se concretizeaza la executie prin apelurile functiei.
+Parametrii efectivi = parametrii folositi la apelul unei functii, iar valorile lor vor fi atribuite parametrilor formali, la executia functiei
+
+DEFINITIE SUBPROGRAM SI APEL SUBPROGRAM:
+
+Definitia unui subprogram reprezinta de fapt descrierea unui proces de calcul cu ajutorul variabilelor virtuale (parametri formali) iar apelul unui subprogram nu este altceva decat executia procesului de calcul pentru cazuri concrete (cu ajutorul parametrilor reali, (efectivi, actuali) ).
+
+definitie subprogram:
+
+int suma(int a, int b)
+{
+	return a+b;
+}
+
+apel subprogram:
+
+suma(5,7)
+
+INTERCLASARE:
+
+Avand la dispozitie doua tablouri unidimensionale (doi vectori) care au elementele ordonate crescator (sau descrescator) ne punem problema construirii unui al treilea tablou care sa contina elementele primelor doua respectand acelasi criteriu de ordonare (crescator sau descrescator).
+
+#include<iostream>
+using namespace std;
+1 3 5 7
+  i
+
+2 4 6
+      j
+
+sir = 1 2
+          k
+void interclasare(int sir1[], int l1, int sir2[], int l2, int sir3[], int &l3)
+{
+	l3 = 0;
+	int i=0, j=0;
+	while (i < l1 && j < l2)
+	{
+		if (sir1[i] < sir2[j])
+			sir3[l3++] = sir1[i++];
+		else
+			sir3[l3++] = sir2[j++];
+	}
+
+
+	for (int k = i; k < l1; k++)
+		sir3[l3++] = sir1[k];
+
+	for (int k = j; k < l2; k++)
+		sir3[l3++] = sir2[k];
+}
+int main()
+{
+	int sir1[100], sir2[100], l1, l2, sir3[100], l3;
+
+	cout << "l1 = ";
+	cin >> l1;
+	
+	for (int i = 0; i < l1; i++)
+	{
+		cout << "sir1[" << i + 1 << "] = ";
+		cin >> sir1[i];
+	}
+
+	cout << "l2 = ";
+	cin >> l2;
+
+	for (int i = 0; i < l2; i++)
+	{
+		cout << "sir2[" << i + 1 << "] = ";
+		cin >> sir2[i];
+	}
+
+	interclasare(sir1, l1, sir2, l2, sir3, l3);
+
+	cout << "sir 3 = ";
+	for (int i = 0; i < l3; i++)
+		cout << sir3[i] << " ";
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+O(n) unde n = l1 + l2
+
+VARIABILE LOCALE SI GLOBALE:
+
+variabila globala = O variabila definita in afara oricarui subprogram, accesibila de oriunde din program (orice subprogram poate citi si modifica valoarea variabilei)
+variabila locala = O variabila definita in interiorul unui bloc (subprogram, while, switch, etc), care poate fi accesata doar de blocul in care este definita
+domeniu de vizibilitate = portiunea de cod in care o variabila este accesibila si utilizabila (un block = un subprogram, while, switch, etc)
+
+ex:
+
+#include<iostream>
+using namespace std;
+
+int variabilaGlobala;
+
+void increment()
+{
+	variabilaGlobala++;
+}
+
+int main()
+{
+	variabilaGlobala = 3;
+	cout<<variabilaGlobala;	// afiseaza 3
+	increment();
+	cout<<variabilaGlobala;	// afiseaza 4
+
+	if(variabilaGlobala%2==0)
+	{
+		int variabilaLocala = 7;
+		cout<<variabilaLocala;	// afiseaza 7
+	}
+
+	cout<<variabilaLocala;	// EROARE deoarece variabilaLocala e accesibila doar in interiorul if-ului de mai sus
+
+	// domeniul de vizibilitate al lui variabilaGlobala este tot programul
+	// domeniul de vizibilitate al lui variabilaLocala este doar if-ul de mai sus
+
+	
+
+	return 0;
+}
+
+CMMMC SI CMMDC:
+
+cmmmc(a,b) = a*b/cmmdc(a,b);
+
+cmmdc(a,b) = ?
+
+Euclid cu impartiri repetate:
+
+int cmmdc(int a, int b)
+{
+    if (a == 0 && b == 0) 
+	return 1;
+	
+    if (a * b == 0)		// daca a e 0 se returneaza b, daca b e 0 se returneaza a
+	return a + b;
+
+    int r;
+    while (b!=0) 
+    {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}
+
+12 18
+18 12
+12 6
+6  0 
+
+Euclid cu scaderi repetate:
+
+int cmmdc(int a, int b) 
+{
+	if (a == 0 && b == 0) 
+		return 1;
+	
+	if (a * b == 0)		// daca a e 0 se returneaza b, daca b e 0 se returneaza a
+		return a + b;
+
+	while (a != b)
+		if (a > b)
+			a = a - b;
+		else
+			b = b - a;
+
+	return a;
+}
+
+FIBONACCI:
+
+In sirul lui Fibonacci fiecare numar reprezinta suma a doua numere anterioare, in afara de primele 2 cu care incepe sirul si care au valoarea 0 si 1.
+
+Ex: 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 ........
+
+long fibonacci(int k)
+{
+	if(k==1)
+		return 0;
+
+	long nr1, nr2;
+
+	nr1 = 0;
+	nr2 = 1;
+
+	for (int i = 3; i <= k; i++)
+	{
+		nr2 = nr1 + nr2;
+		nr1 = nr2 - nr1;
+	}
+
+	return nr2;
+}
+
+int fibonacci(int index)
+{
+	if(index ==0)
+		return 0;
+	else
+		if(index == 1)
+			return 1;
+		else
+			return fibo(index-1) + fibo(index-2);
+			
+}
+
+Matrice:
+
+n = 8
+
+  0 1 2 3 4 5 6 7
+0 P _ _ _ _ _ _ S
+1 _ P _ _ _ _ S _
+2 _ _ P _ _ S _ _
+3 _ _ _ P S _ _ _
+4 _ _ _ S P _ _ _
+5 _ _ S _ _ P _ _
+6 _ S _ _ _ _ P _
+7 S _ _ _ _ _ _ P
+
+deasupra diagonalei principale:
+
+i j
+0 1
+0 2
+0 6
+1 2
+1 4
+1 5
+3 6
+5 6
+
+i < j
+
+sub diagonala principala:
+
+i j
+1 0
+2 0
+2 1
+3 0
+3 1
+3 2
+5 0
+5 4
+5 4
+7 0
+7 3
+7 6
+
+i > j
+
+pe diagonala principala:
+
+i j
+0 0
+1 1
+2 2
+5 5
+7 7
+
+i == j
+
+deasupra diagonalei secundare:
+
+i j
+0 1
+0 3
+0 6
+1 0
+1 5
+2 0
+2 2
+2 4
+4 0
+4 2
+5 0
+5 2
+6 0
+
+i + j < n - 1
+
+sub diagonala secundara:
+
+i j
+1 7
+2 6
+2 7
+3 5
+3 6
+3 7
+7 1
+7 3
+7 5
+7 7
+
+i + j > n - 1
+
+pe diagonala secundara
+
+i j
+0 7
+1 6
+2 5
+3 4
+4 3
+5 2
+6 1
+7 0
+
+i + j == n-1
+
+
+  1 2 3
+1 - - s
+2 - s 0
+3 s 0 0
+
+11
+12
+21
+
+23
+32
+33
+
+13
+22
+31

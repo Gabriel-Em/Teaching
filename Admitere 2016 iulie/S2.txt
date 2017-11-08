@@ -1,0 +1,39 @@
+a. Scrieti un subalgoritm care primeste ca parametrii 2 numere naturale a si b (0<a<=10000), (0<=b<=10000) si care returneaza ultima cifra a lui a la puterea b
+b. 4
+
+F(1002,6):
+a = 1002
+b = 6
+c = 1
+
+a = 4
+b = 3
+
+c = 4
+a = 6
+b = 1
+
+c = 4
+a = 6
+b = 0
+
+
+c. 
+
+int F(int a,int b)
+{
+	if (b > 0)
+		if (b % 2 == 1)
+			return (F((a*a) % 10, b / 2)*a) % 10;
+		else
+			return F((a*a) % 10, b / 2);
+	else
+		return 1;
+}
+
+F(1002,6) = F(4,3)	| 4
+F(4,3) = F(6,1)*4%10	| 4
+F(6,1) = F(6,0)*6%10	| 6
+F(6,0) = 1
+
+F(12,1)

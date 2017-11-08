@@ -1,0 +1,28 @@
+a.
+
+s = 0 + 200 + 2000 + 20 + 2 + 20000 = 22222
+
+b.
+
+daca trebuie suma tuturor numerelor citite inclusiv n atunci problema nu are solutie
+
+daca trebuie doar suma numerelor citite in x atunci:
+
+4 5 50 500 4000 = 5 + 50 + 500 + 4000 = 4555
+
+c.
+
+citeste n;
+s <- 0;
+pentru i <- 1,n executa
+	nr <- 1;
+	citeste x;
+	daca x > 9 atunci
+		repeta
+			nr <- nr*10
+			x <- [x/10]
+		panaCand x <= 9
+	sfDaca
+	s <- s+x*nr;
+sfPentru
+Tipareste s;

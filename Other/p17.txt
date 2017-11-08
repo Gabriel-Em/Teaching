@@ -1,0 +1,105 @@
+#include <iostream>
+using namespace std;
+
+int closestFibo(int nr)	// returneaza cel mai mare numar mai mic sau egal cu nr din sirul lui fibonacci
+{
+	int a = 0, b = 1;
+
+	while (b <= nr)
+	{
+		b = a + b;
+		a = b - a;
+	}
+
+	return a;
+}
+void descompunereInSumaDeFibo(int nr, int termeniSuma[], int &lenSuma)
+{
+	lenSuma = 0;
+
+	int f = closestFibo(nr);
+
+	while (nr != f)
+	{
+		termeniSuma[lenSuma++] = f;
+		nr = nr - f;
+		f = closestFibo(nr);
+	}
+
+	termeniSuma[lenSuma++] = f;
+}
+
+void construireX(int X[], int &lenX, int n)
+{
+	int termeniSuma[50], lenSuma;
+
+	lenX = 0;
+
+	for (int i = 1; i <= n; i++)
+	{
+		X[lenX++] = i;
+
+		descompunereInSumaDeFibo(i, termeniSuma, lenSuma);
+
+		for (int j = lenSuma-1; j >= 0; j--)
+			X[lenX++] = termeniSuma[j];
+	}
+}
+
+void construireMatrice(int A[][100], int n, int X[], int lenX)
+{
+	int i=0, j=-1, pas = 1, directie = 0, xIndex =0;
+
+	while (n > 0)
+	{
+		for (int k = 1; k <= n; k++)
+		{
+			switch (directie % 4)
+			{
+			case 0:j++; break;
+			case 1:i++; break;
+			case 2:j--; break;
+			case 3:i--; break;
+			}
+
+			if (xIndex == lenX)
+				xIndex = 0;
+
+			A[i][j] = X[xIndex++];
+		}
+
+		if (pas % 2 == 1)
+			n--;
+
+		directie++;
+		pas++;
+	}
+}
+
+void afisare(int A[][100], int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			cout << A[i][j] << " ";
+
+		cout << endl;
+	}
+}
+int main()
+{
+	int X[100], lenX, n, A[100][100];
+
+	cout << "n = ";
+	cin >> n;
+
+	construireX(X, lenX, n);
+	construireMatrice(A, n, X, lenX);
+
+	cout<<"matricea A:\n";
+	afisare(A, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

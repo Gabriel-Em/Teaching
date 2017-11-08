@@ -1,0 +1,131 @@
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lenSir)
+{
+	cout << "lenSir = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+bool patratPerfect(int nr)
+{
+	if (sqrt(nr) == int(sqrt(nr)))
+		return true;
+
+	return false;
+}
+
+bool liberDePatrate(int nr)
+{
+	if (patratPerfect(nr))
+		return false;
+
+	int d = 2;
+
+	while (d*d <= nr / 2)
+	{
+		if (nr % (d*d) == 0)
+			return false;
+		d++;
+	}
+
+	return true;
+}
+
+int nrDivizori(int nr)
+{
+	int count = 2;
+
+	for (int d = 2; d <= sqrt(nr); d++)
+	{
+		if (nr%d == 0)
+		{
+			if (nr / d != d)
+				count += 2;
+			else
+				count++;
+		}
+	}
+
+	return count;
+}
+
+void ordonare(int sir[], int lenSir)
+{
+	bool ok;
+	int d1, d2;
+
+	do
+	{
+		ok = true;
+
+		for (int i = 0; i < lenSir - 1; i++)
+		{
+			d1 = nrDivizori(sir[i]);
+			d2 = nrDivizori(sir[i + 1]);
+
+			if (d1 < d2 || d1 == d2 && sir[i] > sir[i + 1])
+			{
+				int aux = sir[i];
+				sir[i] = sir[i + 1];
+				sir[i + 1] = aux;
+				ok = false;
+			}
+		}
+	} while (!ok);
+}
+
+void afisare(int sir[], int lenSir)
+{
+	cout << "(";
+
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << ",";
+
+	cout << "\b)";
+}
+
+int main()
+{
+	int X[100], lenX, Y[100], lenY = 0, Z[100], lenZ = 0;
+
+	citire(X, lenX);
+
+	for (int i = 0; i < lenX; i++)
+		if (liberDePatrate(X[i]))
+			Y[lenY++] = X[i];
+		else
+			if (patratPerfect(X[i]))
+				Z[lenZ++] = X[i];
+	
+	ordonare(X, lenX);
+
+	if (lenY == 0)
+		cout << "\nSirul Y este vid\n";
+	else
+	{
+		cout << "\nY=";
+		afisare(Y, lenY);
+	}
+
+	if (lenZ == 0)
+		cout << "Sirul Z este vid\n";
+	else
+	{
+		cout << "\nZ=";
+		afisare(Z, lenZ);
+	}
+
+	cout << "\nX=";
+	afisare(X, lenX);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

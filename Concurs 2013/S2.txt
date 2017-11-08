@@ -1,0 +1,50 @@
+a)
+
+n = 5
+v = 18 / 823 / 19
+k = 0 / 1
+
+i - 1 -> 4
+
+i=1
+a = 823
+
+c1 = 8
+c2 = 8
+
+i=2
+a = 19
+c1 = 3
+c2 = 1
+
+i=3
+a=.....
+.......
+
+se observa ca algoritmul numara de cate ori ultima cifra a unuia din numerele din lista de numere citita dupa n este egala cu prima cifra a numarului urmator
+
+deci, pentru 5, 18, 823, 19, 94, 4798, unde 5 reprezinta faptul ca urmeaza 5 numere dupa 5, avem:
+
+k <- 0
+
+18  823  19  94  4798
+  \/   \/  \/  \/
+  da   nu  da  da   =>   conditia este indeplinita de 3 ori deci k = 3
+  k++      k++ k++
+
+b) 3, 23, 97, 58
+
+k <- 0
+
+23  97  58
+  \/  \/
+  nu  nu   =>   k = 0
+
+c) 8, 82, 27, 79, 380, 681, 18, 8, 847
+
+k <- 0
+
+82  27  79  380  681  18  8  847
+  \/  \/  \/   \/   \/  \/ \/
+  da  da  nu   nu   da  da da
+  k++ k++          k++ k++ k++   => k = 5

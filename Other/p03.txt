@@ -1,0 +1,106 @@
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lenSir)
+{
+	cout << "lenSir = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+void insertionSort(int sir[], int lenSir)
+{
+	int aux, poz;
+
+	for (int i = 1; i < lenSir; i++)
+	{
+		aux = sir[i];
+		poz = i;
+
+		while (poz > 0 && sir[poz - 1] > aux)
+		{
+			sir[poz] = sir[poz - 1];
+			poz--;
+		}
+
+		sir[poz] = aux;
+	}
+}
+
+void construireY(int X[], int lenX, int Y[], int &lenY, int S)
+{
+	lenY = 0;
+
+	int sum = 0, i = 0;
+
+	while (i < lenX && sum + X[i] <= S)
+	{
+		Y[lenY++] = X[i];
+		sum += X[i];
+		i++;
+	}
+}
+
+void construireZ(int X[], int lenX, int Z[], int &lenZ, int S)
+{
+	lenZ = 0;
+
+	int sum = 0, i = lenX - 1;
+
+	while (i >= 0 && sum + X[i] <= S)
+	{
+		Z[lenZ++] = X[i];
+		sum += X[i];
+		i--;
+	}
+}
+
+void afisare(int sir[], int lenSir)
+{
+	cout << "(";
+
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << ",";
+
+	cout << "\b)";
+}
+
+int main()
+{
+	int X[100], lenX, Y[100], lenY, Z[100], lenZ, S;
+
+	citire(X, lenX);
+
+	cout << "S = ";
+	cin >> S;
+
+	insertionSort(X, lenX);
+
+	construireY(X, lenX, Y, lenY, S);
+	construireZ(X, lenX, Z, lenZ, S);
+
+	if (lenY == 0)
+		cout << "\nSirul Y este vid\n";
+	else
+	{
+		cout << "\nY=";
+		afisare(Y, lenY);
+	}
+
+	if (lenZ == 0)
+		cout << "Sirul Z este vid\n";
+	else
+	{
+		cout << "\nZ=";
+		afisare(Z, lenZ);
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

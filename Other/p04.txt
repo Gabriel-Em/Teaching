@@ -1,0 +1,82 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][100], int &m, int &n)
+{
+	cout << "linii = ";
+	cin >> m;
+	cout << "coloane = ";
+	cin >> n;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+int minLine(int A[][100], int nrColoane, int linie)
+{
+	int min = A[linie][0];
+
+	for (int i = 1; i < nrColoane; i++)
+		if (A[linie][i] < min)
+			min = A[linie][i];
+
+	return min;
+}
+
+int maxColumn(int A[][100], int nrLinii, int coloana)
+{
+	int max = A[0][coloana];
+
+	for (int i = 1; i < nrLinii; i++)
+		if (A[i][coloana] > max)
+			max = A[i][coloana];
+
+	return max;
+}
+
+void inserare(int sir[], int &lenSir, int element)
+{
+	sir[lenSir++] = element;
+}
+
+void afisare(int sir[], int lenSir)
+{
+	cout << "(";
+
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << ",";
+
+	cout << "\b)";
+}
+
+int main()
+{
+	int A[100][100], m, n, X[100], lenX = 0, min, max;
+
+	citire(A, m, n);
+
+	for (int i = 0; i < m; i++)
+	{
+		min = minLine(A, n, i);
+
+		for (int j = 0; j < n; j++)
+			if (A[i][j] == min && maxColumn(A, m, j) == A[i][j])
+				inserare(X, lenX, A[i][j]);
+	}
+
+	if (lenX == 0)
+		cout << "\nSirul X este vid\n";
+	else
+	{
+		cout << "\nX=";
+		afisare(X, lenX);
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

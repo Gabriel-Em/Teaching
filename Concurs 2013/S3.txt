@@ -1,0 +1,103 @@
+#include<iostream>
+using namespace std;
+
+void citire(int sir[], int &lungime)
+{
+	cout << "lungime sir = ";
+	cin >> lungime;
+
+	for (int i = 0; i < lungime; i++)
+	{
+		cout << "sir[" << i + 1 << "] = ";
+		cin >> sir[i];
+	}
+}
+
+int lungimeNumar(int nr)
+{
+	int len = 0;
+
+	while (nr > 0)
+	{
+		len++;
+		nr /= 10;
+	}
+
+	return len;
+}
+
+bool isPrefix(int prefix, int nr)
+{
+	int nrCPrefix = lungimeNumar(prefix), nrCNr = lungimeNumar(nr);
+
+	while (nrCNr > nrCPrefix)
+	{
+		nr /= 10;
+		nrCNr--;
+	}
+
+	if (prefix == nr)
+		return true;
+
+	return false;
+}
+
+void determinareSecventaMaximaDeLai(int sir[], int lenSir, int i, int &from, int &to)
+{
+	int lungimeMax = -1, lungimeSecventa = 1;
+
+	from = -1;
+
+	for (int k = i; k < lenSir -1; k++)
+	{
+		if (isPrefix(sir[k], sir[k + 1]))
+			lungimeSecventa++;
+		else
+		{
+			if (lungimeSecventa != 1 && lungimeSecventa > lungimeMax)
+			{
+				lungimeMax = lungimeSecventa;
+				to = k;
+				from = k - lungimeSecventa + 1;
+			}
+
+			lungimeSecventa = 1;
+		}
+	}
+
+	if (lungimeSecventa != 1 && lungimeSecventa > lungimeMax)
+	{
+		to = lenSir - 1;
+		from = lenSir - lungimeSecventa;
+	}
+}
+
+void determinareSecventaMaxima(int sir[], int lenSir, int &from, int &to)
+{
+	determinareSecventaMaximaDeLai(sir, lenSir, 0, from, to);
+}
+
+void afisareSecventa(int sir[], int from, int to)
+{
+	if (from == -1)
+		cout << "Secventa este vida";
+	else
+	{
+		for (int i = from; i <= to; i++)
+			cout << sir[i] << ", ";
+
+		cout << "\b\b ";
+	}
+}
+int main()
+{
+	int X[500], n, from, to;
+
+	citire(X, n);
+	determinareSecventaMaxima(X, n, from, to);
+	afisareSecventa(X, from, to);
+
+	cout << endl;
+	system("pause");
+	return 0;
+}

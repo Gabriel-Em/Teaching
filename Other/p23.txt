@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+void citire(int mat[][100], int &m, int &n)
+{
+	cout << "m = ";
+	cin >> m;
+	cout << "n = ";
+	cin >> n;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "mat[" << i << "][" << j << "] = ";
+			cin >> mat[i][j];
+		}
+}
+
+bool crescatoare(int nr)
+{
+	if (nr > 9)
+	{
+		if (nr % 10 <= nr / 10 % 10)
+			return false;
+
+		return crescatoare(nr / 10);
+	}
+
+	return true;
+}
+
+bool descrescatoare(int nr)
+{
+	if (nr > 9)
+	{
+		if (nr % 10 >= nr / 10 % 10)
+			return false;
+
+		return descrescatoare(nr / 10);
+	}
+
+	return true;
+}
+
+int main()
+{
+	int A[100][100], m, n;
+	bool exista = false;
+
+	citire(A, m, n);
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+			if (A[i][j] < 0 && crescatoare(abs(A[i][j])))
+			{
+				cout << A[i][j]<< " ";
+				exista = true;
+			}
+	
+	if (!exista)
+		cout << "Nu exista";
+	
+	cout << endl;
+
+	exista = false;
+
+	for (int i = 0; i<m; i++)
+		for (int j = 0; j < n; j++)
+			if (A[i][j] >= 0 && descrescatoare(abs(A[i][j])))
+			{
+				cout << A[i][j] << " ";
+				exista = true;
+			}
+
+	if (!exista)
+		cout << "Nu exista";
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

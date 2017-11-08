@@ -1,0 +1,72 @@
+#include<iostream>
+using namespace std;
+
+bool validSolution(int board[][8], int len, int line, int column)
+{
+	int tureLinie = 0, tureColoana = 0;
+
+	for (int k = 0; k < len; k++)
+	{
+		if (board[line][k] == 1)
+			tureLinie++;
+
+		if (board[k][column] == 1)
+			tureColoana++;
+	}
+
+	if (tureLinie > 1 || tureColoana > 1)
+		return false;
+
+	return true;
+}
+
+bool finalSolution(int line, int len)
+{
+	if (line == len - 1)
+		return true;
+
+	return false;
+}
+
+void printSolution(int solution[][8], int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		for (int j = 0; j < len; j++)
+			if (solution[i][j] == 1)
+				cout << "T ";
+			else
+				cout << "- ";
+
+		cout << endl;
+	}
+
+	cout << endl;
+}
+
+void backtracking(int board[][8], int len, int line)
+{
+	for (int column = 0;column<len;column++)
+	{
+		board[line][column] = 1;
+
+		if (validSolution(board, len, line, column))
+			if (finalSolution(line, len))
+				printSolution(board, len);
+			else
+				backtracking(board, len, line + 1);
+
+		board[line][column] = 0;
+	}
+}
+
+int main()
+{
+	int board[8][8] = { 0 };
+
+	backtracking(board, 4, 0);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

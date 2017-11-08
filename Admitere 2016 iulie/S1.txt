@@ -1,0 +1,212 @@
+1.
+
+#include<iostream>
+using namespace std;
+
+void subalgoritm(int n, int &nrTurnuri, int &nrMonede)
+{
+	nrTurnuri = 0;
+	nrMonede = 0;
+
+	int t = 1;
+
+	while (n > 0)
+	{
+		nrTurnuri += t;
+		nrMonede += t*n;
+
+		n--;
+		t *= 2;
+	}
+}
+
+4 1
+3 2
+2 4
+1 8
+
+1 2 1 3 1 2 1 4 1 2 1 3 1 2 1
+
+int main()
+{
+	int nrTurnuri, nrMonede, n;
+
+	cout << "n = ";
+	cin >> n;
+
+	subalgoritm(n, nrTurnuri, nrMonede);
+
+	cout <<"Turnuri: "<< nrTurnuri << "\nMonede: " << nrMonede;
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+2.
+
+#include<iostream>
+using namespace std;
+
+bool esteNumarMagic(int nr, int p, int q)
+{
+	int cifre[10] = { 0,0,0,0,0,0,0,0,0,0 }, nr2;
+
+	nr2 = nr;
+
+	while (nr > 0)
+	{
+		cifre[nr%p] = 1;
+		nr = nr / p;
+	}
+
+	while (nr2 > 0)
+	{
+		int cifra = nr2%q;
+
+		if (cifre[cifra] == 0)	// numarul convertit in baza q contine o cifra pe care numarul convertit in baza p n-o contine
+			return false;
+
+		cifre[cifra]++;
+		nr2 = nr2 / q;
+	}
+
+	for (int i = 0; i < 10; i++)
+		if (cifre[i] == 1)
+			return false;
+
+	return true;
+}
+
+void subalgoritm(int n, int p, int q, int x[], int &k)
+{
+	k = 0;
+
+	for (int i = 1; i <= n; i++)
+	{
+		if (esteNumarMagic(i,p,q))
+		{
+			x[k] = i;
+			k++;
+		}
+	}
+}
+
+int main()
+{
+	int p, q, n, x[10000], k;
+
+	cout << "n = ";
+	cin >> n;
+
+	cout << "p = ";
+	cin >> p;
+
+	cout << "q = ";
+	cin >> q;
+
+	subalgoritm(n, p, q, x, k);
+
+	cout << "x = [";
+
+	for (int i = 0; i < k; i++)
+		cout << x[i] << ", ";
+
+	cout << "\b\b]";
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+// conversii de baze:
+
+din baza 10 in baza mai mica:
+31 din baza 10 in baza 9 si in baza 7:
+
+inmultiri repetate la baza mai mica si alipirea resturilor obtinute in ordine inversa obtinerii lor:
+
+31/9 = 3 rest 4
+3/9 = 0 rest 3
+
+31(10) = 34(9)
+
+31/7 = 4 rest 3
+4/7 = 0 rest 4
+
+31(10) = 43(7)
+
+din baza mai mica decat 10 in baza 10:
+
+100 din baza 2 in baza 10
+
+fiecare cifra de la coada la cap inmultita cu baza la puterea indicelui cifrei de la dreapta la stanga incepand cu 0
+
+100(2) = 0*2^0 + 0*2^1 + 1*2^2 = 4(10)
+
+34(9) = 4*9^0 + 3*9^1 = 4+27 = 31
+
+43(7) = 3*7^0 + 4*7^1 = 3+28 = 31
+
+3.
+
+#include<iostream>
+using namespace std;
+
+void subalgoritm(int a[], int &n)
+{
+	for (int i = n - 1; i >= 0; i--)
+	{
+		a[i * 2] = a[i];
+
+		int p = 1;
+
+		while (p * 2 < a[i])
+			p *= 2;
+
+		a[i * 2 + 1] = p;
+		n++;
+	}
+}
+
+3 1 24 9
+0 1 2  3
+
+3 2 1  1 24 16 9 8
+0 1 2  3  4 5  6 7
+
+int main()
+{
+	int n, a[20000];
+
+	cout << "n = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "a[" << i << "] = ";
+		cin >> a[i];
+	}
+
+	subalgoritm(a, n);
+
+	for (int i = 0; i < n; i++)
+		cout << a[i] << " ";
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+/*
+3 1 24 9
+0 1  2 3
+
+3 2 1 1 24 16 9 8
+0 1 2 3 4  5  6 7
+
+3 2 24 9 _ _ _ _
+0 1  2 3 4 5 6 7 
+*/

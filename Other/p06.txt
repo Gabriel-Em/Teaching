@@ -1,0 +1,76 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct Elev {
+	char nume[25];
+	float medie;
+};
+
+void citire(Elev elev[], int &n)
+{
+	cout << "Numar elevi = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cin.ignore();
+		cout << "Nume elev " << i + 1 << ": ";
+		cin.getline(elev[i].nume, 25);
+		cout << "Medie generala elev " << i + 1 << ": ";
+		cin >> elev[i].medie;
+	}
+}
+
+float medieGeneralaClasa(Elev elevi[], int n)
+{
+	float medie = 0;
+
+	for (int i = 0; i < n; i++)
+		medie += elevi[i].medie;
+
+	return medie / n;
+}
+
+void bubbleSort(Elev elevi[], int nrElevi)
+{
+	bool ok;
+
+	do
+	{
+		ok = true;
+
+		for (int i = 0; i < nrElevi - 1; i++)
+			if (elevi[i].medie < elevi[i + 1].medie || elevi[i].medie == elevi[i+1].medie && strcmp(elevi[i].nume, elevi[i + 1].nume) > 0)
+			{
+				Elev aux = elevi[i];
+				elevi[i] = elevi[i + 1];
+				elevi[i + 1] = aux;
+				ok = false;
+			}
+	} while (!ok);
+}
+
+void afisare(Elev elevi[], int n)
+{
+	for (int i = 0; i < n; i++)
+		cout << elevi[i].nume << " " << elevi[i].medie << endl;
+}
+
+int main()
+{
+	Elev elevi[100];
+	int n;
+	
+	citire(elevi, n);
+	double d = 122.345;
+
+	cout << fixed << setprecision(2) << medieGeneralaClasa(elevi, n) << endl;	// afisare cu exact 2 zecimale
+
+	selectionSort(elevi, n);
+	afisare(elevi, n);
+	
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

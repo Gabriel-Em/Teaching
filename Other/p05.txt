@@ -1,0 +1,89 @@
+#include <iostream>
+using namespace std;
+
+void citire(char X[][11], int &n)
+{
+	cout << "nr cuvinte = ";
+	cin >> n;
+	cin.ignore();
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "cuvant << i + 1 <<" :";
+		cin.getline(X[i], 10);
+	}
+}
+
+char primaLitera(char cuvant[])
+{
+	return cuvant[0];
+}
+
+char ultimaLitera(char cuvant[])
+{
+	return cuvant[strlen(cuvant) - 1];
+}
+
+bool eVocala(char c)
+{
+	if (strchr("aeiouAEIOU", c))
+		return true;
+	return false;
+}
+
+bool cuvantValid(char cuvant[])
+{
+	if (eVocala(primaLitera(cuvant)) && eVocala(ultimaLitera(cuvant)))
+		return true;
+	return false;
+}
+
+void determinareSecventa(char cuvinte[][11], int n, int &from, int &to)
+{
+	from = -1;
+	to = -1;
+
+	int currentLen = 0, maxLen = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		if (!cuvantValid(cuvinte[i]))
+		{
+			if (currentLen > maxLen)
+			{
+				to = i-1;
+				from = i - currentLen;
+				maxLen = currentLen;
+			}
+			currentLen = 0;
+		}
+		else
+			currentLen++;
+	}
+
+	if (currentLen > maxLen)
+	{
+		to = n - 1;
+		from = n - currentLen;
+	}
+}
+
+void afisareSecventa(char cuvinte[][11], int from, int to)
+{
+	for (int i = from; i <= to; i++)
+		cout << cuvinte[i] << endl;
+}
+
+int main()
+{
+	char X[100][11];
+	int n, from, to;
+
+	citire(X, n);
+	determinareSecventa(X, n, from, to);
+	afisareSecventa(X, from, to);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

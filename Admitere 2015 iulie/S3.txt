@@ -1,0 +1,146 @@
+#include<iostream>
+using namespace std;
+
+void citire(int matrice[][101], int &n, int &m)
+{
+	cout << "linii = ";
+	cin >> n;
+	cout << "coloane = ";
+	cin >> m;
+
+	for(int i =1;i<=n;i++)
+		for (int j = 1; j <= m; j++)
+		{
+			cout << "matrice[" << i << "][" << j << "] = ";
+			cin >> matrice[i][j];
+		}
+}
+
+void construireX(int X[], int A[][101], int n, int m, int &lenX)
+{
+	lenX = 0;
+
+	for (int i = 1; i <= m; i++)
+		for (int j = 1; j <= n; j++)
+			X[lenX++] = A[j][i];
+}
+
+bool prim(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr < 2 || nr % 2 == 0)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+int getSufix(int nr)
+{
+	if (nr % 10 == nr)
+		return 0;
+
+	int sufix = 0, p = 1;
+
+	while (nr > 9)
+	{
+		sufix = nr % 10 * p + sufix;
+		p *= 10;
+		nr /= 10;
+	}
+
+	return sufix;
+}
+
+int firstDigit(int nr)
+{
+	while (nr > 9)
+		nr /= 10;
+
+	return nr;
+}
+
+bool magic(int nr)
+{
+	if (!prim(firstDigit(nr)))
+		return false;
+
+	while (nr > 0)
+	{
+		if (!prim(nr))
+			return false;
+
+		nr = getSufix(nr);
+	}
+
+	return true;
+}
+
+void determinaSecventaMaxima(int sir[], int lenSir, int i, int &from, int &to)
+{
+	from = -1;
+	to = -1;
+	
+	int len = 1, lenMax = -1;
+
+	for (int k = i+1; k < lenSir; k++)
+	{
+		if (magic(sir[k - 1] + sir[k]))
+			len++;
+		else
+		{
+			if (len >1 && len > lenMax)
+			{
+				lenMax = len;
+				to = k-1;
+				from = k - len;
+			}
+
+			len = 1;
+		}
+	}
+
+	if (len >1 && len > lenMax)
+	{
+		to = lenSir - 1;
+		from = lenSir - len;
+	}
+}
+
+void determinaSecventaMaxima(int sir[], int lenSir, int &from, int &to)
+{
+	determinaSecventaMaxima(sir, lenSir, 0, from, to);
+}
+
+void tiparireSecventa(int sir[], int from, int to)
+{
+	if (from == -1)
+		cout << "Nu exista secventa";
+	else
+		for (int i = from; i <= to; i++)
+			cout << sir[i] << " ";
+}
+
+int main()
+{
+	int X[10201], A[101][101], n, m, lenX, from, to;
+
+	citire(A, n, m);
+	construireX(X, A, n, m, lenX);
+	determinaSecventaMaxima(X, lenX, from, to);
+	tiparireSecventa(X, from, to);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

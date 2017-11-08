@@ -1,0 +1,189 @@
+1.
+
+#include<iostream>
+using namespace std;
+
+void subalgoritm(int r, int sir[])
+{
+	int prevsir[33];	// ai nevoie de un prevsir = linia precedenta pentru ca fiecare linie r e generata din linia anterioara
+
+	for (int i = 0; i <= r; i++)	// trebuie sa generezi toate liniile pana la r
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			if (j == 0 || j == i)	// daca esti pe margini
+				sir[j] = 1;
+			else
+				sir[j] = prevsir[j - 1] + prevsir[j];
+		}
+
+		for (int j = 0; j <= i; j++)	// copiezi ultimul rand in prevsir in cazul in care mai ai de generat un rand
+			prevsir[j] = sir[j];
+	}
+}
+
+int main()
+{
+	int sir[33], r;
+
+	cout << "r = ";
+	cin >> r;
+
+	subalgoritm(r, sir);
+
+	for (int i = 0; i <= r; i++)
+		cout << sir[i] << " ";
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+2.
+
+#include<iostream>
+using namespace std;
+
+void subalgoritm(int n, int k, int &nrOre)
+{
+	int nrOre = 0;
+
+	while(n>=k)
+	{
+		// inceputul orei
+
+		if (n % 2 == 0)
+			n = n / 2;
+		else
+			n++;
+
+		nrOre++; // a trecut o ora
+
+	}	// sfarsitul orei
+}
+
+int main()
+{
+	int n, k, nrOre;
+
+	cout << "n = ";
+	cin >> n;
+	cout << "k = ";
+	cin >> k;
+
+	nrOre = subalgoritm(n, k);
+
+	cout << "Numarul de ore necesar distrugerii populatiei de " << n << " virusi este " << nrOre;
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+3.
+
+#include <iostream>
+using namespace std;
+
+void ordonare(int n, int s[]) {
+
+	bool sorted = false;
+
+	while (!sorted)
+	{
+		sorted = true;
+		for (int j = 1; j < n; j++)
+			if (s[j - 1] > s[j])
+			{
+				s[j - 1] = s[j - 1] + s[j];
+				s[j] = s[j - 1] - s[j];
+				s[j - 1] = s[j - 1] - s[j];
+				sorted = false;
+			}
+	}
+}
+
+void produsMaxim(int n, int x[], int &a, int &b, int &c) {
+
+	int minime[2];
+	minime[0] = x[0];
+	minime[1] = x[1];
+	ordonare(2, minime);
+
+	int maxime[3];
+	maxime[0] = x[0];
+	maxime[1] = x[1];
+	maxime[2] = x[2];
+	ordonare(3, maxime);
+
+	for (int i = 2; i < n; i++) {
+		if (x[i] < minime[1]) {
+			minime[1] = x[i];
+			ordonare(2, minime);
+		}
+		if (x[i] > maxime[0]) {
+			maxime[0] = x[i];
+			ordonare(3, maxime);
+		}
+	}
+
+	if ((maxime[2] > 0) && (minime[0] * minime[1] > maxime[1] * maxime[0])) {
+		a = maxime[2];
+		b = minime[0];
+		c = minime[1];
+	}
+	else {
+		a = maxime[2];
+		b = maxime[1];
+		c = maxime[0];
+	}
+}
+
+void citire(int &n, int x[]) {
+	cout << "nr elem = ";
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cout << "sir[" << i << "] = ";
+		cin >> x[i];
+	}
+}
+
+int main() {
+	int n = 0, elemente[10000], a = 0, b = 0, c = 0;
+	citire(n, elemente);
+	produsMaxim(n, elemente, a, b, c);
+	cout << a << " " << b << " " << c << endl;
+	system("pause");
+	return 0;
+}
+
+cazuri speciale:
+
+-3 -2 -1 0 6 7 8
+
+minime: -3 -2 -1
+maxime:  6  7  8
+
+-3 -2 -1 0 1 2 3
+
+minime: -3 -2 -1
+maxime:  1  2  3
+
+-2 -1 0 1
+
+minime: -2 -1  0
+maxime: -1  0  1
+
+-1 0 1 2
+
+minime: -1 0 1
+maxime:  0 1 2
+
+cazuri speciale:
+
+-2 -1 0 1 2
+
+minime: -2 -1  0
+maxime:  0  1  2

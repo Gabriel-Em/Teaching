@@ -1,0 +1,234 @@
+#include<iostream>
+using namespace std;
+
+void citire(int A[][50], int &n)
+{
+	cout << "n = ";
+	cin >> n;
+
+	for(int i=0;i<n;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "A[" << i+1 << "][" << j+1 << "] = ";
+			cin >> A[i][j];
+		}
+}
+
+void tiparireSir(int sir[], int n)
+{
+	if (n == 0)
+		cout << "Sirul este vid.";
+	else
+	{
+		cout << "X: ";
+
+		for (int i = 0; i < n; i++)
+			cout << sir[i] << " ";
+	}
+}
+
+bool estePrim(int nr)
+{
+	if (nr == 2)
+		return true;
+
+	if (nr < 2 || nr % 2 == 0)
+		return false;
+
+	int i = 3;
+
+	while (i*i <= nr)
+	{
+		if (nr%i == 0)
+			return false;
+		i += 2;
+	}
+
+	return true;
+}
+
+bool esteSuperPrim(int nr)
+{
+	if (nr == 0)
+		return false;
+
+	while (nr > 0)
+	{
+		if (!estePrim(nr))
+			return false;
+		nr = nr / 10;
+	}
+
+	return true;
+}
+
+void inserare(int V[], int &n, int valoare)
+{
+	if (n == 0 || valoare < V[n - 1])
+		V[n] = valoare;
+	else
+	{
+		int i = 0;
+
+		while (valoare < V[i])
+			i++;
+
+		for (int j = n; j > i; j--)
+			V[j] = V[j - 1];
+
+		V[i] = valoare;
+	}
+
+	n++;
+}
+
+bool exista(int V[], int n, int valoare)
+{
+	for (int i = 0; i < n; i++)
+		if (V[i] == valoare)
+			return true;
+	return false;
+}
+
+void construireSir(int A[][50], int n, int V[], int &lungimeV)
+{
+	for(int i=0;i<n;i++)
+		for (int j = 0; j < n; j++)
+		{
+			if (i > j && i + j < n - 1 || i < j && i + j >= n)
+				if (esteSuperPrim(A[i][j]) && !exista(V,lungimeV,A[i][j]))
+					inserare(V, lungimeV, A[i][j]);
+		}
+}
+
+int main()
+{
+	int A[50][50],n,V[600],lungimeV=0;
+
+	citire(A, n);
+	construireSir(A, n, V, lungimeV);
+	tiparireSir(V, lungimeV);
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+/*
+matrice test:
+
+0 0 0 0 0
+2 0 0 0 7
+239 79 0 29 13
+5 17 0 0 0
+0 0 0 0 0
+
+
+
+
+
+n = 8
+
+  0 1 2 3 4 5 6 7
+0 P _ _ _ _ _ _ S
+1 _ P _ _ _ _ S _ 
+2 _ _ P _ _ S _ _
+3 _ _ _ P S _ _ _
+4 _ _ _ S P _ _ _
+5 _ _ S _ _ P _ _
+6 _ S _ _ _ _ P _
+7 S _ _ _ _ _ _ P
+
+deasupra diagonalei principale:
+
+i j
+0 1
+0 2
+0 6
+1 2
+1 4
+1 5
+3 6
+5 6
+
+i < j
+
+sub diagonala principala:
+
+i j
+1 0
+2 0
+2 1
+3 0
+3 1
+3 2
+5 0
+5 4
+5 4
+7 0
+7 3
+7 6
+
+i > j
+
+deasupra diagonalei secundare:
+
+i j
+0 1
+0 3
+0 6
+1 0
+1 5
+2 0
+2 2
+2 4
+4 0
+4 2
+5 0
+5 2
+6 0
+
+i + j < n - 1
+
+sub diagonala secundara:
+
+i j
+1 7
+2 6
+2 7
+3 5
+3 6
+3 7
+7 1
+7 3
+7 5
+7 7
+
+i + j >= n
+
+pe diagonala principala:
+
+i j
+0 0
+1 1
+2 2
+5 5
+7 7
+
+i == j
+
+pe diagonala secundara
+
+i j
+0 7
+1 6
+2 5
+3 4
+4 3
+5 2
+6 1
+7 0
+
+i + j == n-1
+*/

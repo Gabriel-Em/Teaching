@@ -1,0 +1,412 @@
+1. Mai jos sunt prezentate 2 variante de rezolvare pentru aceasta problema
+
+// ============================================================
+//        varianta fara formula (simulare) [ -5 puncte ]
+// ============================================================
+
+#include <iostream>
+using namespace std;
+
+void nrReflexii(int a, int b, int &nrSchimb)
+{
+	nrSchimb = 0;
+	int x = 0, y = 0, directie = 1;
+	/*
+		x, y - coordonatele razei (x - orizontal, y - vertical)
+		directie - directia in care merge raza:
+			1 - spre dreapta sus
+			2 - spre dreapta jos
+			3 - spre stanga jos
+			4 - spre stanga sus
+
+
+		consideram planul avand coordonata din stanga jos (punctul de pornire al razei), punctul 0,0
+		asta inseamna ca pentru un dreptunghi de lungime 8 si inaltime 3 coordonatele celor 4 colturi sunt
+
+		stanga sus: 0 3
+		stanga jos: 0 0
+		dreapta sus: 8 3
+		dreapta jos: 8 0
+	*/
+
+	do {
+		// in loc de switch se puteau folosi si 4 ifuri in care se verifica valoarea variabilei directie
+		switch (directie)
+		{
+		case 1: // spre dreapta sus
+			x++;
+			y++;
+			break;
+		case 2: // spre dreapta jos
+			x++;
+			y--;
+			break;
+		case 3: // spre stanga jos
+			x--;
+			y--;
+			break;
+		case 4: // spre stanga sus
+			x--;
+			y++;
+			break;
+		}
+
+		if (y != 0 && y != b)	// daca nu atingem marginea de jos sau de sus
+								// ATENTIE! daca nu aveam iful de pe linia anterioara, atunci, datorita faptului ca 
+								// mai jos verificam marginea din stanga sau cea din dreapta, y == 0 sau y == b, care
+								// inseamna marginea de jos sau marginea de sus, insemna impreuna cu x == 0 sau x == a
+								// ca am ajuns intr-un colt! prin urmare acest if ne asigura ca atingem marginea din
+								// stanga sau din dreapta fara sa fim in vreun colt
+			if (x == 0)	// marginea din stanga
+			{
+				if (directie == 4)	// daca am atins marginea din stanga calatorind spre stanga sus
+					directie = 1;	// raza se va reflecta in directia dreapta sus
+				else				// altfel am atins marginea din stanga calatorind spre stanga jos
+					directie = 2;   // deci raza se va reflecta in directia dreapta jos
+
+				nrSchimb++;
+			}
+			else
+				if (x == a)	// marginea din dreapta
+				{
+					if (directie == 1)	// daca am atins marginea din dreapta calatorind spre dreapta sus
+						directie = 4;	// raza se va reflecta in directia stanga sus
+					else				// altfel am atins marginea din stanga calatorind spre dreapta jos
+						directie = 3;   // deci raza se va reflecta in directia stanga jos
+
+					nrSchimb++;
+				}
+
+		if (x != 0 && x != a)	// daca nu avem treaba cu marginea din stanga si din dreapta
+			if (y == 0)	// marginea de jos
+			{
+				if (directie == 2)	// daca am atins marginea de jos calatorind spre dreapta jos
+					directie = 1;	// raza se va reflecta in directia dreapta sus
+				else				// altfel am atins marginea din stanga calatorind spre stanga jos
+					directie = 4;   // deci raza se va reflecta in directia stanga sus
+
+				nrSchimb++;
+			}
+			else
+				if (y == b) // marginea de sus
+				{
+					if (directie == 1)	// daca am atins marginea de sus calatorind spre dreapta sus
+						directie = 2;	// raza se va reflecta in directia dreapta jos
+					else				// altfel am atins marginea din stanga calatorind spre stanga sus
+						directie = 3;   // deci raza se va reflecta in directia stanga jos
+
+					nrSchimb++;
+				}
+
+	} while (x != a && x != 0 || y != b && y != 0); // cat timp nu am ajuns intr-un colt
+}
+
+int main()
+{
+	int a, b, nrSchimb;
+
+	cout << "a = ";
+	cin >> a;
+	cout << "b = ";
+	cin >> b;
+
+	nrReflexii(a, b, nrSchimb);
+
+	cout << nrSchimb;
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+/*
+	============================================================
+        	    varianta cu formula [ punctaj maxim ]
+	============================================================
+ 
+	formula: a/cmmdc(a,b) + b/cmmdc(a,b) - 2
+
+	cum se ajunge la formula?
+
+	dat fiind un careu de lungime a si inaltime b, o raza de lumina care porneste din coltul din stanga jos va atinge un perete orizontal (sus sau jos) de cate ori
+	distanta parcursa de raza e divizibila cu inaltimea careului; de asemenea, un perete vertical (stanga sau dreapta) va fi atins de cate ori distanta parcursa
+	e divizibila cu lungimea careului. Prin urmare, un colt (compus dintr-un perete vertical si unul orizontal / deci a atinge un colt = a atinge un perete
+	orizontal si unul vertical in acelasi timp) va fi atins atunci cand distanta parcursa e divizibila atat cu lungimea cat si cu inaltimea careului.
+
+	ex: 
+		lungime = 8
+		inaltime = 3
+		nrP = 0 (numar pereti atinsi)
+
+	Rog a se urmari explicatia de mai jos impreuna cu desenul atasat problemei din subiect
+
+	Fie (x,y) = (0,0) coordonata initiala a razei de lumina (coltul din stanga jos). Deoarece lumina incepe in coltul din stanga jos cu directia dreapta sus, vom
+	nota coordonatele razei dupa fiecare pas parcurs incepand prin a creste coordonata x si y a razei de lumina cu 1. Un pas parcurs = o unitate de lungime si
+	inaltime parcursa in directia in care se indrepta raza de lumina.
+
+	initial: (0,0)
+
+	mergem spre dreapta sus (x creste la dreapta si y creste in sus)
+
+	1 unitate: (1,1)
+	2 unitati: (2,2)
+	3 unitati: (3,3)   **   unitatea cu numarul 3 e divizibila cu inaltimea 3, deci am atins un perete orizontal (cel de sus)
+	nrP = 1
+
+	schimbam directia spre dreapta jos deoarece mai sus am atins peretele de sus (x creste la dreapta si y scade in jos)
+
+	4 unitati: (4,2)
+	5 unitati: (5,1)
+	6 unitati: (6,0)   **   6 e divizibil cu inaltimea 3 deci am atins din nou un perete orizontal (cel de jos)
+	nrP = 2
+
+	schimbam directia spre dreapta sus deoarece am atins peretele de jos (x creste la dreapta si y creste in sus)
+
+	7 unitati: (7,1)	
+	8 unitati: (8,2)   **   8 e divizibil cu lungimea 8 deci am atins un perete vertical (cel din dreapta)
+	nrP = 3
+
+	schimbam directia spre stanga sus (x scade la stanga si y creste in sus)
+
+	9 unitati: (7,3)   **   9 e divizibil cu inaltimea 3 deci am atins un perete orizontal (cel de sus)
+	nrP = 4
+
+	schimbam directia spre stanga jos (x scade la stanga si y scade in jos)
+
+	10 unitati: (6,2)
+	11 unitati: (5,1)
+	12 unitati: (4,0)  **  12 e divizibil cu inaltimea 3 deci am atins un perete orizontal (cel de jos)
+	nrP = 5
+
+	schimbam directia spre stanga sus (x scade la stanga si y creste in sus)
+
+	13 unitati: (3,1)
+	14 unitati: (2,2)
+	15 unitati: (1,3)  **  15 e divizibil cu inaltimea 3 deci am atins un perete orizontal (cel de sus)
+	nrP = 6
+
+	schimbam directia spre stanga jos (x scade la stanga si y scade in jos)
+
+	16 unitati: (0,2)  **  16 e divizibil cu lungimea 8 deci am atins un perete vertical (cel de la stanga)
+	nrP = 7
+
+	schimbam directia spre dreapta jos (x creste la dreapta si y scade in jos)
+
+	17 unitati: (1,1)
+	18 unitati: (2,0)  **  18 e divizibil cu inaltimea 3 deci am atins un perete orizontal (cel de jos)
+	nrP = 8
+
+	schimbam directia spre dreapta sus (x creste la dreapta si y creste in sus)
+
+	19 unitati: (3,1)
+	20 unitati: (4,2)
+	21 unitati: (5,3) ** 21 e divizibil cu inaltimea 3 deci am atins un perete orizontal (cel de sus)
+	nrP = 9
+
+	schimbam directia spre dreapta jos (x creste la dreapta si y scade in jos)
+
+	22 unitati: (6,2)
+	23 unitati: (7,1)
+	24 unitati: (8,0) ** 24 e divizibil atat cu inaltimea 3 cat si cu lungimea 8 deci am atins un colt
+	nrP = 11
+
+	se observa ca de cate ori numarul unitatilor parcurs este divizibil cu inaltimea, atingem un perete orizontal si de cate or inumarul unitatilor este divizibil
+	cu lungimea atingem un perete vertical, iar colturile inseamna atingerea simultan a unui perete vertical si orizontal (deci numarul unitatilor trebuie sa fie
+	divizibil atat cu lungimea cat si cu inaltimea ca sa atingem un colt)
+
+	Ok, acu sa ajungem la formula.
+
+	daca a = 8, si b = 3, primul numar care se divide atat cu 8 cat si cu 3 este cel mai mare multiplu comun al lui 8 si 3, adica 24
+	asta inseamna ca trebuie sa parcurgem 24 de unitati ca sa ajungem intr-un colt
+
+	din moment ce atingerea unui perete orizontal inseamna nr unitatilor divizibile cu inaltimea si atingerea unui perete vertical insemna nr unitatilor divizibile
+	cu lungimea, reise ca:
+
+	numarul peretilor orizontali atinsi = 24 / 3 = 8
+	numarul peretilor verticali atinsi = 24 / 8 = 3
+
+	numarul peretilor atinsi in total = 8 + 3 = 11 DIN CARE scadem un perete orizontal si un perete vertical datorita faptului ca problema ne cere sa returnam
+	numarul peretilor DIN CARE RICOSEAZA lumina si in clipa in care lumina atinge un colt (adica un perete orizontal si vertical in acelasi timp), aceasta
+	nu mai ricoseaza si se opreste, deci, scadem cei 2 pereti (orizontal si vertical) care apartin coltului atins.
+
+	numarul pretilor din care ricoseaza raza = 11 - 2 = 9
+
+	deci, nr pereti din care ricoseaza raza = CMMMC(8,3)/3 + CMMMC(8,3)/8 - 2 			*(formula 1)
+
+	cum scriem asta in C++?
+
+	cel mai mic multiplu comun dintre a si b este egal cu produsul dintre a si b supra cel mai mare divizor comun dintre a si b, deci
+
+	CMMMC(a,b) = a*b/cmmdc(a,b)		*(formula 2)
+
+	revenind la formula  *(formula 1), o rescriem in functie de a si b in loc de 8 si 3
+
+	CMMMC(a,b) / b + CMMMC(a,b) / a - 2			care se poate rescrie folosind *(formula 2) astfel
+	[a*b/cmmdc(a,b)] / b + [a*b/cmmdc(a,b)] / a - 2 	adica
+	[a*b / cmmdc(a,b) * b] + [a*b / cmmdc(a,b) * a]	- 2	care simplificat duce la
+	a / cmmdc(a,b) + b / cmmdc(a,b) - 2			care e formula la care trebuia sa ajungem
+
+	mai jos se gaseste varianta C++ a formulei de mai sus
+
+*/
+
+#include<iostream>
+using namespace std;
+
+int cmmdc(int a, int b) 
+{
+	if (a == 0 && b == 0) 
+		return 1;
+	
+	if (a * b == 0)		// daca a e 0 se returneaza b, daca b e 0 se returneaza a
+		return a + b;
+
+	while (a != b)
+		if (a > b)
+			a = a - b;
+		else
+			b = b - a;
+
+	return a;
+}
+
+void nrReflectii(int a, int b, int &nrSchimb)
+{
+	int cmmdc_ = cmmdc(a, b);
+
+	nrSchimb = a / cmmdc_ + b / cmmdc_ - 2;
+}
+
+int main()
+{
+	int a, b, nrSchimb;
+
+	cout << "a = ";
+	cin >> a;
+	cout << "b = ";
+	cin >> b;
+
+	nrReflectii(a, b, nrSchimb);
+
+	cout << nrSchimb;
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+2.
+
+#include <iostream>
+using namespace std;
+
+struct grupForta {
+	int forta;
+	int elemente[100];
+	int lenElemente;
+};
+
+void citire(int sir[], int &lenSir)
+{
+	cout << "lungime = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "element " << i + 1 << " = ";
+		cin >> sir[i];
+	}
+}
+
+int getForta(int nr)
+{
+	int k = 0;
+
+	while (nr > 0)
+	{
+		k += nr % 2;
+		nr /= 2;
+	}
+
+	return k;
+}
+
+void inserare(grupForta grupuri[], int &nrG, int forta, int element)
+{
+	// daca nu exista grupuri in vectorul grupuri sau daca forta din parmametru este mai mare decat forta tuturor grupurilor din grupuri (deci mai mare decat
+	// forta ultimului grup din moment ce grupurile sunt ordonate dupa forta)
+
+	if (nrG == 0 || forta > grupuri[nrG-1].forta)	
+	{
+		// cream un grup nou si introducem valoarea variabilei element capatate ca parametru ca prim element al acestui grup
+
+		grupuri[nrG].forta = forta;		// setam forta acestui grup la forta primita ca parametru
+		grupuri[nrG].elemente[0] = element;	// primul element din acest grup este valoarea variabilei element din parametru
+		grupuri[nrG++].lenElemente = 1;		// lungimea acestui grup este 1 (si de asemenea crestem nrG deoarece tocmai am introdus un grup nou in grupuri)
+	}
+	else // cautam un grup cu forta mai mare sau egala cu forta primita ca parametru
+	{
+		int i = 0;
+		while (grupuri[i].forta < forta)
+			i++;
+
+		// daca am gasit un grup cu grup.forta == forta atunci adaugam valoarea variabilei element ca ultim element din acel
+		// grup si crestem lungimea sirului elementelor din grup cu 1
+
+		if (grupuri[i].forta == forta)
+			grupuri[i].elemente[grupuri[i].lenElemente++] = element;
+		else
+		{
+
+			// altfel, grupul (sau grupurile) de la pozitia i incolo au forta mai mare decat forta din parametru si le mutam pe toate cu o pozitie spre dreapta
+
+			for (int j = nrG; j > i; j--)
+				grupuri[j] = grupuri[j - 1];
+
+			// urmand ca pe pozitia i sa inseram un grup nou
+
+			grupuri[i].forta = forta;		// se setam forta acestui grup
+			grupuri[i].elemente[0] = element;	// sa introducem element ca prim element al acestui grup
+			grupuri[i].lenElemente = 1;		// si sa setam lungimea sirului de elemente al grupui la 1
+
+			nrG++;					// am introdus un grup nou deci crestem numarul total de grupuri
+		}
+	}
+}
+
+void determinareGrupuri(int x[], int n, int &nrG, grupForta grupuri[])
+{
+	nrG = 0;
+
+	for (int i = 0; i < n; i++)
+		inserare(grupuri, nrG, getForta(x[i]), x[i]);
+}
+
+void afisare(int nrG, grupForta grupuri[])
+{
+	cout << "Exista " << nrG << " grupuri de forta si acestea sunt:\n";
+
+	for (int i = 0; i < nrG; i++)
+	{
+		cout << "\nforta " << grupuri[i].forta << " -> (";
+
+		for (int j = 0; j < grupuri[i].lenElemente; j++)
+			cout << grupuri[i].elemente[j] << ", ";
+
+		cout << "\b\b)";
+	}
+}
+
+int main()
+{
+	int x[100], n, nrG;
+	grupForta grupuri[16];
+
+	citire(x, n);
+	determinareGrupuri(x, n, nrG, grupuri);
+	afisare(nrG, grupuri);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

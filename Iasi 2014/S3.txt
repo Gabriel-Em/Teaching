@@ -1,0 +1,151 @@
+a) vezi Sudoku.png
+b) 
+
+1. gasim pozitia primei casute necompletate din sudoku -> 2
+2. incercam sa plasam o cifra de la 1 la 9 in casuta respectiva -> 3 daca 2.1 e falsa altfel -> 2.1
+2.1 daca ajungem in pasul asta cand nu mai avem nicio cifra de pus, punem 0 pe casuta curenta si ne intoarcem la casuta din fata casutei curente din sudoku pe care am plasat o cifra -> continuam sa plasam cifre in acea casuta -> 2 daca 2.2 e falsa altfel -> 2.2
+2.2 daca nu exista o casuta anterioara la care sa ne intoarcem inseamna ca puzzleul sudoku e imposibil de rezolvat {UNSOLVABLE!!!}
+3. dupa plasarea unei cifre verificam daca careul sudoku este corect pana in punctul asta {da -> 4 / nu -> 5}
+4. verificam daca careul de sudoku e completat pe toate pozitiile {da -> 6 / nu -> 7}
+5. sterem cifra pusa si incercam sa punem alta cifra -> 3
+6. DONE!!!
+7. gasim pozitia urmatoarei casute necompletate -> 2
+
+c)
+
+#include<iostream>
+using namespace std;
+
+bool validSolution(int sudoku[][9], int line, int column)
+{
+	// checking if position (line,column) has any digits repeating on the same line, column and in the same inner box
+
+	int lineDigits[10]{ 0 }, columnDigits[10]{ 0 }, boxDigits[10]{ 0 };
+	int boxLine = line - line % 3, boxColumn = column - column % 3;
+
+	for (int k = 0; k < 9; k++)
+	{
+		lineDigits[sudoku[line][k]]++;
+		columnDigits[sudoku[k][column]]++;
+		boxDigits[sudoku[boxLine][boxColumn + k % 3]]++;
+
+		if (k % 3 == 2)
+			boxLine++;
+	}
+
+	for (int digit = 1; digit <= 9; digit++)
+		if (lineDigits[digit] > 1 || columnDigits[digit] > 1 || boxDigits[digit] > 1)
+			return false;
+			
+	return true;
+}
+
+bool getFirstEmpty(int sudoku[][9], int &i, int &j)
+{
+	for (i = 0; i < 9; i++)
+		for (j = 0; j < 9; j++)
+			if (sudoku[i][j] == 0)
+				return true;
+
+	return false;
+}
+
+bool backtracking(int sudoku[][9])
+{
+	int linie, coloana;
+
+	if (!getFirstEmpty(sudoku, linie, coloana))
+		return true;
+
+	for(int digit = 1;digit<=9;digit++)
+	{
+		sudoku[linie][coloana] = digit;
+
+		if (validSolution(sudoku,linie,coloana))
+			if (backtracking(sudoku))
+				return true;
+
+		sudoku[linie][coloana] = 0;
+	}
+
+	return false;
+}
+
+void printSolution(int solution[][9])
+{
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (i % 3 == 0)
+			cout << "+-------+-------+-------+\n";
+
+		for (int j = 0; j < 9; j++)
+		{
+			if (j %3 == 0)
+				cout << "| ";
+
+			cout << solution[i][j] << " ";
+		}
+
+		cout << "|\n";
+	}
+
+	cout << "+-------+-------+-------+\n";
+}
+
+void solve(int sudoku[][9], int solution[][9])
+{
+	for (int i = 0; i < 9; i++)
+		for (int j = 0; j < 9; j++)
+			solution[i][j] = sudoku[i][j];
+
+	if (!backtracking(solution))
+		for (int i = 0; i < 9; i++)
+			for (int j = 0; j < 9; j++)
+				solution[i][j] = 0;
+}
+
+void citire(int sudoku[][9])
+{
+	for (int i = 0; i < 9; i++)
+		for (int j = 0; j < 9; j++)
+		{
+			cout << "Sudoku[" << i + 1 << "][" << j + 1 << "] = ";
+			cin >> sudoku[i][j];
+		}
+}
+
+int main()
+{
+	int sudoku[9][9], solution[9][9];
+	bool solved = false;
+	
+	citire(sudoku);
+	solve(sudoku, solution);
+	printSolution(solution);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+Date de test:
+
+2 5 8 7 3 0 9 4 1
+6 0 9 8 2 4 3 0 7
+4 0 7 0 1 5 2 6 0
+3 9 5 2 7 0 4 0 6
+0 6 2 4 0 8 1 0 5
+8 4 0 6 5 0 7 2 9
+1 8 4 3 6 9 5 7 2
+0 7 0 1 4 2 0 9 3
+9 2 3 5 8 7 6 1 4
+
+{{2, 5, 8, 7, 3, 0, 9, 4, 1},
+{6, 0, 9, 8, 2, 4, 3, 0, 7},
+{4, 0, 7, 0, 1, 5, 2, 6, 0},
+{3, 9, 5, 2, 7, 0, 4, 0, 6},
+{0, 6, 2, 4, 0, 8, 1, 0, 5},
+{8, 4, 0, 6, 5, 0, 7, 2, 9},
+{1, 8, 4, 3, 6, 9, 5, 7, 2},
+{0, 7, 0, 1, 4, 2, 0, 9, 3},
+{9, 2, 3, 5, 8, 7, 6, 1, 4}}

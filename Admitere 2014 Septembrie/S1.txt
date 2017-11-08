@@ -1,0 +1,58 @@
+a) Definitia unui subprogram reprezinta de fapt descrierea unui proces de calcul cu ajutorul variabilelor virtuale (parametri formali) iar apelul unui subprogram nu este altceva decat executia procesului de calcul pentru cazuri concrete (cu ajutorul parametrilor reali, (efectivi, actuali) ).
+
+definitie subprogram:
+
+int suma(int a, int b)
+{
+	return a+b;
+}
+
+apel subprogram:
+
+suma(5,7)
+
+b)
+
+Euclid cu impartiri repetate:
+
+int cmmdc(int a, int b)
+{
+    int r;
+    while (b!=0) 
+    {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}
+
+Euclid cu scaderi repetate:
+
+int cmmdc(int a, int b)
+{
+
+    while (a!=b)
+        if (a>b)
+            a = a-b;
+        else
+            b = b-a;
+    return a;
+}
+
+c)
+
+a = 3
+b = 7
+
+a = a+b	| 10
+b = a-b	| 3
+a = a-b	| 7
+
+a = a*b | 21
+b = a/b | 3
+a = a/b | 7
+
+a = a-b | -4
+b = a+b | 3
+a = b-a | 7

@@ -1,0 +1,145 @@
+a)
+
+o variabila este o marime de un anumit tip de date care-si poate schimba valoarea de mai multe ori in timpul executiei unui program
+
+variabila globala = O variabila definita in afara oricarui subprogram, accesibila de oriunde din program (orice subprogram poate citi si modifica valoarea variabilei)
+variabila locala = O variabila definita in interiorul unui bloc (subprogram, while, switch, etc), care poate fi accesata doar de blocul in care este definita
+domeniu de vizibilitate = portiunea de cod in care o variabila este accesibila si utilizabila (un block = un subprogram, while, switch, etc)
+
+ex:
+
+#include<iostream>
+using namespace std;
+
+int variabilaGlobala;
+
+void increment()
+{
+	variabilaGlobala++;
+}
+
+int main()
+{
+	variabilaGlobala = 3;
+	cout<<variabilaGlobala;	// afiseaza 3
+	increment();
+	cout<<variabilaGlobala;	// afiseaza 4
+
+	if(variabilaGlobala%2==0)
+	{
+		int variabilaLocala = 7;
+		cout<<variabilaLocala;	// afiseaza 7
+	}
+
+	cout<<variabilaLocala;	// EROARE deoarece variabilaLocala e accesibila doar in interiorul if-ului de mai sus
+
+	// domeniul de vizibilitate al lui variabilaGlobala este tot programul
+	// domeniul de vizibilitate al lui variabilaLocala este doar if-ul de mai sus
+
+	
+
+	return 0;
+}
+
+b)
+
+BUBBLESORT (metoda bulelor):
+
+Idee
+1. se parcurg si se compara elementele din sir 2 cate 2 si se interschimba elementele care nu respecta criteriul de ordonare. Dupa ce am parcurs TOT sirul trecem la pasul 2
+2. / DACA am interschimbat oricare 2 elemente la pasul 1 atunci facem o noua parcurgere a sirului urmand din nou instructiunile de la pasul 1
+   \ ALTFEL trecem la pasul 3
+3. ne oprim pentru ca sirul nostru este deja ordonat (stim asta pentru ca nu am avut de facut nicio interschimbare la pasul 2 deoarece toate elementele au respectat criteriul de ordonare)
+
+Exemplu: 
+
+sir = [5, 1, 4, 2, 8]
+
+nota: elementele notate cu [] mai jos sunt elementele cu care se lucreaza (adica elementele care se compara sau a caror pozitie am interschimbat-o)
+
+Prima parcurgere:
+([5] [1]  4   2   8 ) ->  ( [1] [5]  4   2   8 ), mai intai se compra 5 cu 1 si pentru ca 5>1 interschimbam cele 2 elemente
+( 1  [5] [4]  2   8 ) ->  (  1  [4] [5]  2   8 ), se compara 5 cu 4, interschimbam pentru ca 5>4
+( 1   4  [5] [2]  8 ) ->  (  1   4  [2] [5]  8 ), se compara 5 cu 2, interschimbam pentru ca 5>2
+( 1   4   2  [5] [8]) ->  (  1   4   2   5   8 ), se compara 5 cu 8, dar pentru ca 5<8 aceste elemente isi pastreaza pozitia
+
+Deoarece am interschimbat elemente la parcurgerea anterioara, urmeaza sa facem o noua parcurgere
+
+Parcurgerea 2:
+([1] [4]  2   5   8 ) ->  (  1   4   2   5   8 ), se compara 1 cu 4, 1<4, elementele isi pastreaza pozitia
+( 1  [4] [2]  5   8 ) ->  (  1  [2] [4]  5   8 ), se compara 4 cu 2, 4>2, insterschimbam elementele
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 ), se compara 4 cu 5, 4<5, elementele isi pastreaza pozitia
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 ), se compara 5 cu 8, 5<8, elementele isi pastreaza pozitia
+
+Deoarece am interschimbat elemente la parcurgerea anterioara, urmeaza sa facem o noua parcurgere
+
+Parcurgerea 3:
+([1] [2]  4   5   8 ) ->  (  1   2   4   5   8 ), 1<2, raman la fel
+( 1  [2] [4]  5   8 ) ->  (  1   2   4   5   8 ), 2<4, raman la fel
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 ), 4<5, raman la fel
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 ), 5<8, raman la fel
+
+Deoarece NU am interschimbat niciun element ne vom opri pentru ca sirul nostru este sortat
+
+Algoritm:
+
+void bubblesort(int sir[], int lenSir)
+{
+	bool ok;
+	do
+	{
+		ok = true;
+		for(int i = 0; i < lenSir; i++)
+			if(sir[i] > sir[i+1])
+			{
+				// interschimbare fara variabile auxiliare
+				sir[i] = sir[i] + sir[i+1];
+				sir[i+1] = sir[i] - sir[i+1];
+				sir[i] = sir[i] - sir[i+1];
+
+				ok = false;
+			}
+	} while (!ok);
+}
+
+Complexitate: O(n^2) deoarece in cel mai rau caz posibil, avem de parcurs toate cele n (n=lungimea sirului) elemente din sir de un n numar de parcurgeri (adica n*n). Se poate testa cu sirul [5,4,3,2,1] care trebuie sortat crescator.
+
+c)
+
+pentru ca doua numere sa fie prime intre ele, cel mai mare divizor comun al lor trebuie sa fie 1
+
+Algoritm:
+
+bool primeIntreEle(int a, int b)
+{
+	if(cmmdc(a,b) == 1)
+		return true;
+	
+	return false;
+}
+
+Varianta 1 - Euclid cu impartiri repetate:
+
+int cmmdc(int a, int b)
+{
+    int r;
+    while (b!=0) 
+    {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}
+
+Varianta 2 - Euclid cu scaderi repetate:
+
+int cmmdc(int a, int b)
+{
+    while (a!=b)
+        if (a>b)
+            a = a-b;
+        else
+            b = b-a;
+    return a;
+}

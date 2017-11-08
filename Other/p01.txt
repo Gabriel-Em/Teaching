@@ -1,0 +1,85 @@
+#include <iostream>
+using namespace std;
+
+void citire(int sir[], int &lenSir)
+{
+	cout << "lungime = ";
+	cin >> lenSir;
+
+	for (int i = 0; i < lenSir; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+bool contineNumar(int a, int b)
+{
+	int b2;
+
+	while (a > 0)
+	{
+		b2 = b;
+		while (a % 10 == b2 % 10 && a > 0 && b2 > 0)
+		{
+			a /= 10;
+			b2 /= 10;
+		}
+
+		if (b2 == 0)
+			return true;
+
+		a /= 10;
+	}
+
+	return false;
+}
+
+int primaCifra(int nr)
+{
+	while (nr > 9)
+		nr /= 10;
+
+	return nr;
+}
+
+void adaugare(int sir[], int &lenSir, int nr)
+{
+	sir[lenSir++] = nr;
+}
+
+void afisare(int sir[], int lenSir)
+{
+	cout << "(";
+
+	for (int i = 0; i < lenSir; i++)
+		cout << sir[i] << ",";
+
+	cout << "\b)";
+}
+
+int main()
+{
+	int sir[100], lenSir, Y[100], r, lenY = 0;
+
+	cout << "r = ";
+	cin >> r;
+
+	citire(sir, lenSir);
+
+	for (int i = 0; i < lenSir; i++)
+		if (contineNumar(sir[i], r))
+			adaugare(Y, lenY, primaCifra(sir[i]));
+
+	if(lenY == 0)
+		cout<<"Sirul Y este vid";
+	else
+	{
+		cout<<"Y=";
+		afisare(Y, lenY);
+	}
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

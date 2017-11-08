@@ -1,0 +1,170 @@
+a.
+
+variabila globala = O variabila definita in afara oricarui subprogram, accesibila de oriunde din program (orice subprogram poate citi si modifica valoarea variabilei)
+variabila locala = O variabila definita in interiorul unui bloc (subprogram, while, switch, etc), care poate fi accesata doar de blocul in care este definita
+domeniu de vizibilitate = portiunea de cod in care o variabila este accesibila si utilizabila (un block = un subprogram, while, switch, etc)
+
+ex:
+
+#include<iostream>
+using namespace std;
+
+int variabilaGlobala;
+
+void increment()
+{
+	variabilaGlobala++;
+}
+
+int main()
+{
+	variabilaGlobala = 3;
+	cout<<variabilaGlobala;	// afiseaza 3
+	increment();
+	cout<<variabilaGlobala;	// afiseaza 4
+
+	if(variabilaGlobala%2==0)
+	{
+		int variabilaLocala = 7;
+		cout<<variabilaLocala;	// afiseaza 7
+	}
+
+	cout<<variabilaLocala;	// EROARE deoarece variabilaLocala e accesibila doar in interiorul if-ului de mai sus
+
+	// domeniul de vizibilitate al lui variabilaGlobala este tot programul
+	// domeniul de vizibilitate al lui variabilaLocala este doar if-ul de mai sus
+
+	
+
+	return 0;
+}
+
+b.
+
+cum faci cmmmc intre 2 numere?
+
+solutie: a*b/cmmdc(a,b);
+
+cmmdc(a,b) = ?
+
+folosim algoritmul lui euclid cu scaderi repetate:
+
+#include<iostream>
+using namespace std;
+
+int cmmdc(int a, int b)	// EUCLID
+{
+	while (a != b)
+	{
+		if (a>b)
+			a = a - b;
+		else
+			b = b - a;
+	}
+	return a;
+}
+
+int cmmmc(int a, int b)
+{
+	return a*b / cmmdc(a, b);
+}
+
+int cmmmcSir(int n, int X[])
+{
+	int rezultat = cmmmc(X[0], X[1]);
+
+	for (int i = 2; i < n; i++)
+		rezultat = cmmmc(rezultat, X[i]);
+
+	return rezultat;
+}
+
+int main()
+{
+	int n, X[1000];
+
+	cout << "n = ";
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << "X[" << i << "] = ";
+		cin >> X[i];
+	}
+
+	cout << "\nCMMMC al numerelor din sirul X este: " << cmmmcSir(n, X);
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
+
+c.
+
+#include<iostream>
+using namespace std;
+
+int cuStructuriRepetitive(long n)
+{
+	int n2, p;
+
+	n2 = 0;
+	p = 1;
+
+	while (n > 10)
+	{
+		n2 = n % 10 * p + n2;
+		p = p * 10;
+		n = n / 10;
+	}
+
+	return n2 * 10 + n;
+}
+
+int faraStructuriRepetitive(long n)
+{
+	int d = 0;
+
+	if (n < 10)
+		return n;
+	else
+		if (n < 100)
+			return n % 10 * 10 + n / 10;
+		else
+			if (n < 1000)
+				return n % 100 * 10 + n / 100;
+			else
+				if (n < 10000)
+					return n % 1000 * 10 + n / 1000;
+				else
+					if (n < 100000)
+						return n % 10000 * 10 + n / 10000;
+					else
+						if (n < 1000000)
+							return n % 100000 * 10 + n / 100000;
+						else
+							if (n < 10000000)
+								return n % 1000000 * 10 + n / 1000000;
+							else
+								if (n < 100000000)
+									return n % 10000000 * 10 + n / 10000000;
+								else
+									return n % 100000000 * 10 + n / 100000000;
+}
+
+int main()
+{
+	long n;
+
+	cout << "n = ";
+	cin >> n;
+
+	cout << "Cu structuri repetitive: "<< cuStructuriRepetitive(n) << endl;
+	cout << "Fara structuri repetitive: " << faraStructuriRepetitive(n);
+
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}

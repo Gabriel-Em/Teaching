@@ -1,0 +1,71 @@
+a)
+
+n = 5
+v = 8
+
+i = 1
+
+d = 8
+a = 24
+gasit = false
+
+cat timp:
+	ct1 = 8<=8*24 (true) si !gasit (true)
+		d1 = [8/24]*24 == 8 (false) si [8/8]*8 == 8 (true)
+			-
+		altfel 
+			d = 9
+
+	ct2 = 9<=8*24 (true) si !gasit (true)
+		d2 = [9/24]*24 == 9 (false) si [9/8]*8 == 9 (false)
+			-
+		altfel
+			d = 10
+	.....
+	d-ul creste pana cand devine mai mare decat a*v sau primul daca din cat timp e adevarat
+	.....
+	d = 24 va face acel daca sa fie adevarat si atunci
+		gasit <- adevarat
+v = 24
+
+i = 2
+d = 24
+a = 16
+gasit = false
+
+cat timp:
+	ct1 = 24<=24*16(true) si !gasit(true)
+		d1 = [24/16]*16==24 (false) si [24/24]*24==24 (true)
+			-
+		altfel
+			d = 25
+	.....
+	d-ul creste pana cand devine mai mare decat a*v sau primul daca din cat timp e adevarat
+	.....
+	d = 48 va face acel daca sa fie adevarat si atunci
+		gasit <- adevarat 
+v = 48
+
+i = 3
+
+d = 48
+a = 64
+gasit = false
+
+......
+d = 192
+
+v = 192
+
+i = 4
+a = 192
+gasit = false
+
+v = 192
+
+Tipareste 192
+
+ne dam seama ca problema calculeaza CMMMC al numerelor citite dupa primul numar
+
+b) (4) 1 2 3 167
+c) (3 25) 9 75

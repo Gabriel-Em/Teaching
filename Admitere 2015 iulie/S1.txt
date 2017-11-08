@@ -1,0 +1,239 @@
+a)
+
+#include<iostream>
+using namespace std;
+
+void citireMatrice(int matrice[][100], int &m, int &n)
+{
+	cout << "linii = ";
+	cin >> m;
+	cout << "coloane = ";
+	cin >> n;
+
+	for(int i =1;i<=m;i++)
+		for (int j = 1; j <= n; j++)
+		{
+			cout << "matrice[" << i << "][" << j << "] = ";
+			cin >> matrice[i][j];
+		}
+}
+
+void determinaMinMaxLinie(int matrice[][100], int i, int nrCol, int &pozMin, int &pozMax)
+{
+	pozMin = -1;
+	pozMax = -1;
+	int min = 9999999, max = -1;
+
+	for (int j = 1; j <= nrCol; j++)
+	{
+		if (min > matrice[i][j])
+		{
+			min = matrice[i][j];
+			pozMin = j;
+		}
+
+		if (max < matrice[i][j])
+		{
+			max = matrice[i][j];
+			pozMax = j;
+		}
+	}
+}
+
+bool isMaximPeColoana(int matrice[][100], int i, int j, int nrLinii)
+{
+	for (int k = 1; k <= nrLinii; k++)
+		if (k != i && matrice[k][j] >= matrice[i][j])
+			return false;
+
+	return true;
+}
+
+bool isMnimPeColoana(int matrice[][100], int i, int j, int nrLinii)
+{
+	for (int k = 1; k <= nrLinii; k++)
+		if (k != i && matrice[k][j] <= matrice[i][j])
+			return false;
+
+	return true;
+}
+
+int determinareElementeSA(int matrice[][100], int m, int n)
+{
+	int pozMin, pozMax, count = 0;
+	for (int i = 1; i <= m; i++)
+	{
+		determinaMinMaxLinie(matrice, i, n, pozMin, pozMax);
+
+		if (isMaximPeColoana(matrice, i, pozMin, m))
+			count++;
+
+		if(isMnimPeColoana(matrice,i,pozMax,m))
+			count++;
+	}
+
+	return count;
+}
+int main()
+{
+	int A[100][100], n, m;
+	citireMatrice(A, m, n);
+	determinareElementeSA(A, m, n);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include<fstream>
+using namespace std;
+
+void citire(int a[][100], int &m, int &n)
+{
+	cin >> m >> n;
+	for (int i = 1; i <= m; i++)
+		for (int j = 1; j <= n; j++)
+		{
+			cin >> a[i][j];
+		}
+}
+
+int determinare(int a[][100], int &m, int &n)
+{
+	int min, max, colMin, colMax, count = 0;
+
+	for (int i = 1; i <= m; i++)
+	{
+		min = a[i][1];
+		max = a[i][1];
+		colMin = 1;
+		colMax = 1;
+
+		for (int j = 2; j <= n; j++)
+		{
+			if (a[i][j] < min)
+			{
+				min = a[i][j];
+				colMin = j;
+			}
+
+			if (a[i][j] > max)
+			{
+				max = a[i][j];
+				colMax = j;
+			}
+		}
+
+		bool minOk = true, maxOk = true;
+
+		for (int k = 1; k <= m; k++)
+		{
+			if (a[k][colMin] > min)
+				minOk = false;
+
+			if (a[k][colMax] < max)
+				maxOk = false;
+		}
+
+		if (minOk)
+			count++;
+		if (maxOk)
+			count++;
+	}
+
+	return count;
+}
+
+int main()
+{
+	int a[100][100], m, n;
+	citire(a, m, n);
+	cout << determinare(a, m, n);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+b)
+
+#include<iostream>
+using namespace std;
+
+int transformareNumar(int nr)
+{
+	int body = 0, p = 1;
+	while (nr > 9)
+	{
+		body = nr % 10 * p + body;
+		p *= 10;
+		nr /= 10;
+	}
+
+	return body * 10 + nr;
+}
+
+int greatest(int nr)
+{
+	int copie = nr, max = nr;
+
+	nr = transformareNumar(nr);
+
+	while (nr != copie)
+	{
+		if (nr > max)
+			max = nr;
+		
+		nr = transformareNumar(nr);
+	}
+
+	return max;
+}
+
+int main()
+{
+	int nr;
+	cout << "nr = ";
+	cin >> nr;
+	cout << greatest(nr);
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+c)
+
+int cautareIterativa(float sir[], int lungime, int v)
+{
+	if (v > sir[lungime - 1])
+		return -1;
+
+	int i = 0;
+
+	while (i < lungime)
+	{
+		if (sir[i] == v)
+			return i;
+		else
+			if (sir[i] > v)
+				return -1;
+		i++;
+	}
+}
+
+int cautareRecursiva(float sir[], int lungime, int v)
+{
+	if (lungime == 0 || sir[lungime - 1] < v)
+		return -1;
+	else
+	{
+		if (sir[lungime - 1] == v)
+			return lungime - 1;
+
+		return cautareRecursiva(sir, lungime - 1, v);
+	}
+}

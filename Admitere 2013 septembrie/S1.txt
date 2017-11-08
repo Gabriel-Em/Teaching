@@ -1,0 +1,44 @@
+a)
+
+variabila = o marime de un anumit tip de date care-si poate schimba valoarea de mai multe ori in timpul executiei unui program
+constanta = o variabila care nu-si poate schimba valoarea, ea avand o valoare fixa pe tot parcursul executiei programului
+
+int x;			// x neinitializat
+const int y;		// EROARE - constantele trebuie initializate cu o valoarea dupa declarare
+const int z = 3;	// z are valoarea 3
+
+x = 7;			// x are valoarea 7
+z = 29;			// EROARE - constantele nu isi pot schimba valoarea
+
+b)
+
+vezi fisierul Sortari.txt
+
+c)
+
+Euclid cu impartiri repetate:
+
+int euclid(int a, int b)
+{
+    int r;
+    while (b!=0) 
+    {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}
+
+Euclid cu scaderi repetate:
+
+int euclid(int a, int b)
+{
+
+    while (a!=b)
+        if (a>b)
+            a = a-b;
+        else
+            b = b-a;
+    return a;
+}

@@ -1,0 +1,94 @@
+#include <iostream>
+using namespace std;
+
+int sumaCifre(int nr)
+{
+	int suma = 0;
+
+	while (nr > 0)
+	{
+		suma += nr % 10;
+		nr /= 10;
+	}
+
+	return suma;
+}
+int getCifraControl(int nr)
+{
+	int suma = sumaCifre(nr);
+
+	while (suma > 9)
+		suma = sumaCifre(suma);
+
+	return suma;
+}
+
+int getInvers(int nr)
+{
+	int invers = 0;
+
+	while (nr > 0)
+	{
+		invers = invers * 10 + nr % 10;
+		nr /= 10;
+	}
+
+	return invers;
+}
+
+int determinareCelMaiLungPrefix(int matrice[][100], int m, int n, int nr)
+{
+	int cifre[10]{ 0 }, prefix=0;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			cifre[getCifraControl(matrice[i][j])]++;
+
+	int invers = getInvers(nr);
+
+	while (invers>0 && cifre[invers % 10] != 0)
+	{
+		prefix = prefix * 10 + invers % 10;
+		invers /= 10;
+	}
+
+	return prefix;
+}
+
+void citire(int matrice[][100], int &m, int &n, int &nr)
+{
+	cout << "nr = ";
+	cin >> nr;
+
+	cout << "m = ";
+	cin >> m;
+	cout << "n = ";
+	cin >> n;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < n; j++)
+		{
+			cout << "matrice[" << i << "][" << j << "] = ";
+			cin >> matrice[i][j];
+		}
+}
+
+void afisare(int prefix)
+{
+	if (prefix == 0)
+		cout << "nu exista prefix";
+	else
+		cout << prefix;
+}
+
+int main()
+{
+	int nr, A[100][100], n, m;
+
+	citire(A, m, n, nr);
+	afisare(determinareCelMaiLungPrefix(A, m, n, nr));
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
