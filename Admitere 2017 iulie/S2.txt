@@ -1,0 +1,53 @@
+a. 
+	Dandu-se un numar natural n (1 <= n <= 1000000) sa se calculeze numarul p format doar din cifrele pare ale lui n (de la stanga la dreapta) si numarul i format doar din cifrele impare ale lui n (de la stanga la dreapta).
+
+b. 
+	p = 2060
+	i = 59
+
+c.
+
+daca trebuia pseudocod:
+
+subalgoritm f(n, p, i)
+	p <- 0
+	i <- 0
+	pp <- 1
+	pi <- 1
+
+	cat timp n =/= 0 executa
+		daca n mod 10 mod 2 = 0 atunci
+			p <- n mod 10 * pp + p
+			pp <- pp * 10
+		altfel
+			i <- n mod 10 * pi + i
+			pi <- pi * 10
+		sfDaca
+		n <- n div 10
+	sfCatTimp
+sfSubalgoritm
+
+daca trebuia C++:
+
+void f(int n, int &p, int &i)
+{
+	p = 0;
+	i = 0;
+	int pp = 1;
+	int pi = 1;
+
+	while (n)
+	{
+		if (n % 10 % 2 == 0)
+		{
+			p = n % 10 * pp + p;
+			pp *= 10;
+		}
+		else
+		{
+			i = n % 10 * pi + i;
+			pi *= 10;
+		}
+		n /= 10;
+	}
+}

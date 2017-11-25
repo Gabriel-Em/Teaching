@@ -1,0 +1,179 @@
+1.
+
+n = 12, k = 9
+
+* * * * * * * * * * * *
+    =     =     =     =
+
+4 copii primesc ciocolata (din 3 in 3)
+
+n = 8, k = 2
+
+* * * * * * * *
+  =   =   =   =
+
+4 copii primesc ciocolata (din 2 in 2)
+
+n = 6, k = 9
+
+* * * * * *
+    =     =
+
+2 copii primesc ciocolata (din 3 in 3)
+
+n = 15, k = 10
+
+* * * * * * * * * * * * * * *
+        =         =         =
+
+3 copii primesc ciocolata (din 5 in 5)
+
+n = 15, k = 7
+
+* * * * * * * * * * * * * * *
+= = = = = = = = = = = = = = =
+
+15 copii primesc ciocolata (din 1 in 1)
+
+pare ca la fiecare pas ciocolata se distribuie din cmmdc(n,k) in cmmdc(n,k) copii
+cmmdc(12, 9) = 3 - au primit ciocolata din 3 in 3 copii
+cmmdc(8, 2) = 2 - au primit din 2 in 2
+cmmdc(6, 9) = 3 - au primit din 3 in 3
+cmmdc(15, 10) = 5 - au primit din 5 in 5
+cmmdc(15, 7) = 1 - au primit din 1 in 1
+
+deci numarul copiilor care primesc ciocolata este n / cmmdc(n,k) [daca sunt 15 copii si se da ciocolata din 3 in 3 atunci 15 / 3 = 5 copii vor primi ciocolata]
+
+daca numarul copiilor care primesc ciocolata este n / cmmdc(n,k) atunci cei care NU primesc ciocolata sunt n - n / cmmdc(n,k)
+
+mai jos se gaseste varianta C++ a formulei de mai sus
+
+#include<iostream>
+using namespace std;
+
+int cmmdc(int a, int b)
+{
+	if (a == 0 && b == 0)
+		return 1;
+
+	if (a * b == 0)		// daca a e 0 se returneaza b, daca b e 0 se returneaza a
+		return a + b;
+
+	while (a != b)
+		if (a > b)
+			a = a - b;
+		else
+			b = b - a;
+
+	return a;
+}
+
+void ciocolata(int n, int k, int &nr)
+{
+	nr = n - n / cmmdc(n, k);
+}
+
+int main()
+{
+	int n, k, nr;
+
+	cout << "n = ";
+	cin >> n;
+	cout << "k = ";
+	cin >> k;
+
+	ciocolata(n, k, nr);
+
+	cout << nr << " copii nu vor primi ciocolata!";
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+2.
+
+#include<iostream>
+using namespace std;
+
+void citireSir(int sir[], int &len)
+{
+	cout << "lungime = ";
+	cin >> len;
+	for (int i = 0; i < len; i++)
+	{
+		cout << "sir[" << i << "] = ";
+		cin >> sir[i];
+	}
+}
+
+void subalgoritm(int a[], int b[], int n, int m, bool &raspuns, int &k, int &nrMax)
+{
+	if (m > n)
+	{
+		raspuns = false;
+		nrMax = -1;
+		k = -1;
+	}
+	else
+	{
+		raspuns = true;
+		nrMax = -1;
+
+		int indexA = 0, indexB = 0, sumaCurenta, lenCurent;
+
+		sumaCurenta = 0;
+		lenCurent = 0;
+
+		while (raspuns && indexB < m && indexA < n)
+		{
+			sumaCurenta += a[indexA];
+			lenCurent++;
+
+			if (sumaCurenta == b[indexB])
+			{
+				if (lenCurent > nrMax)
+				{
+					nrMax = lenCurent;
+					k = indexB + 1;
+				}
+				sumaCurenta = 0;
+				lenCurent = 0;
+				indexB++;
+				indexA++;
+			}
+			else
+				if (sumaCurenta > b[indexB])
+				{
+					raspuns = false;
+					nrMax = -1;
+					k = -1;
+				}
+				else
+					indexA++;
+		}
+
+		if (indexA < n || indexB < m)
+		{
+			raspuns = false;
+			nrMax = -1;
+			k = -1;
+		}
+	}
+}
+
+int main()
+{
+	int a[10000], b[10000], n, m, k, nrMax;
+	bool raspuns;
+
+	citireSir(a, n);
+	citireSir(b, m);
+	subalgoritm(a, b, n, m, raspuns, k, nrMax);
+	cout << "raspuns = " << raspuns << "\nk = " << k << "\nnrMax = " << nrMax;
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}

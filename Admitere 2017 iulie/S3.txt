@@ -1,0 +1,106 @@
+#include<iostream>
+using namespace std;
+
+void citire(int imagine[][320], int &m, char s[], int &lenS)
+{
+	cout << "m = ";
+	cin >> m;
+
+	for(int i =0;i<m;i++)
+		for (int j = 0; j < m; j++)
+		{
+			cout << "imagine[" << i << "][" << j << "] = ";
+			cin >> imagine[i][j];
+		}
+
+	cout << "numarul de transformari = ";
+	cin >> lenS;
+
+	for (int i = 0; i < lenS; i++)
+	{
+		cout << "transformare[" << i + 1 << "] = ";
+		cin >> s[i];
+	}
+}
+
+void inversare(int imagine[][320], int m)
+{
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			if (imagine[i][j] == 0)
+				imagine[i][j] = 1;
+			else
+				imagine[i][j] = 0;
+}
+
+void rotire(int imagine[][320], int m)
+{
+	int copie[320][320];
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			copie[j][m-i-1] = imagine[i][j];
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			imagine[i][j] = copie[i][j];
+}
+
+void zoom(int imagine[][320], int &m)
+{
+	for(int i = m-1; i>=0;i--)
+		for (int j = m - 1; j >= 0; j--)
+		{
+			imagine[i * 2][j * 2] = imagine[i][j];
+			imagine[i * 2 + 1][j * 2] = imagine[i][j];
+			imagine[i * 2][j * 2 + 1] = imagine[i][j];
+			imagine[i * 2 + 1][j * 2 + 1] = imagine[i][j];
+		}
+
+	m *= 2;
+}
+
+void afisare(int imagine[][320], int m)
+{
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < m; j++)
+			cout << imagine[i][j] << " ";
+		cout << endl;
+	}
+}
+
+void aplicaTransformari(int imagine[][320], int &m, char s[], int lenS)
+{
+	for (int i = 0; i < lenS; i++)
+	{
+		switch (s[i])
+		{
+		case 'R':
+			rotire(imagine, m);
+			break;
+		case 'I':
+			inversare(imagine, m);
+			break;
+		case 'Z':
+			zoom(imagine, m);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+int main()
+{
+	int imagine[320][320], m, lenS;
+	char s[5];
+
+	citire(imagine, m, s, lenS);
+	aplicaTransformari(imagine, m, s, lenS);
+	afisare(imagine, m);
+
+	cout << endl << endl;
+	system("pause");
+	return 0;
+}
