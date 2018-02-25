@@ -1,0 +1,580 @@
+1.
+
+BUBBLESORT (metoda bulelor):
+
+Idee
+1. se parcurg si se compara elementele din sir 2 cate 2 si se interschimba elementele care nu respecta criteriul de ordonare. Dupa ce am parcurs TOT sirul trecem la pasul 2
+2. / DACA am interschimbat oricare 2 elemente la pasul 1 atunci facem o noua parcurgere a sirului urmand din nou instructiunile de la pasul 1
+   \ ALTFEL trecem la pasul 3
+3. ne oprim pentru ca sirul nostru este deja ordonat (stim asta pentru ca nu am avut de facut nicio interschimbare la pasul 2 deoarece toate elementele au respectat criteriul de ordonare)
+
+Exemplu: 
+
+sir = [5, 1, 4, 2, 8]
+
+nota: elementele notate cu [] mai jos sunt elementele cu care se lucreaza (adica elementele care se compara sau a caror pozitie am interschimbat-o)
+
+Prima parcurgere:
+([5] [1]  4   2   8 ) ->  ( [1] [5]  4   2   8 ), mai intai se compra 5 cu 1 si pentru ca 5>1 interschimbam cele 2 elemente
+( 1  [5] [4]  2   8 ) ->  (  1  [4] [5]  2   8 ), se compara 5 cu 4, interschimbam pentru ca 5>4
+( 1   4  [5] [2]  8 ) ->  (  1   4  [2] [5]  8 ), se compara 5 cu 2, interschimbam pentru ca 5>2
+( 1   4   2  [5] [8]) ->  (  1   4   2   5   8 ), se compara 5 cu 8, dar pentru ca 5<8 aceste elemente isi pastreaza pozitia
+
+Deoarece am interschimbat elemente la parcurgerea anterioara, urmeaza sa facem o noua parcurgere
+
+Parcurgerea 2:
+([1] [4]  2   5   8 ) ->  (  1   4   2   5   8 ), se compara 1 cu 4, 1<4, elementele isi pastreaza pozitia
+( 1  [4] [2]  5   8 ) ->  (  1  [2] [4]  5   8 ), se compara 4 cu 2, 4>2, insterschimbam elementele
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 ), se compara 4 cu 5, 4<5, elementele isi pastreaza pozitia
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 ), se compara 5 cu 8, 5<8, elementele isi pastreaza pozitia
+
+Deoarece am interschimbat elemente la parcurgerea anterioara, urmeaza sa facem o noua parcurgere
+
+Parcurgerea 3:
+([1] [2]  4   5   8 ) ->  (  1   2   4   5   8 ), 1<2, raman la fel
+( 1  [2] [4]  5   8 ) ->  (  1   2   4   5   8 ), 2<4, raman la fel
+( 1   2  [4] [5]  8 ) ->  (  1   2   4   5   8 ), 4<5, raman la fel
+( 1   2   4  [5] [8]) ->  (  1   2   4   5   8 ), 5<8, raman la fel
+
+Deoarece NU am interschimbat niciun element ne vom opri pentru ca sirul nostru este sortat
+
+Algoritm:
+
+void bubblesort(int sir[], int lenSir)
+{
+	bool ok;
+	do
+	{
+		ok = true;
+		for(int i = 0; i < lenSir; i++)
+			if(sir[i] > sir[i+1])
+			{
+				// interschimbare fara variabile auxiliare
+				sir[i] = sir[i] + sir[i+1];
+				sir[i+1] = sir[i] - sir[i+1];
+				sir[i] = sir[i] - sir[i+1];
+
+				ok = false;
+			}
+	} while (!ok);
+}
+
+Complexitate: O(n^2) deoarece in cel mai rau caz posibil, avem de parcurs toate cele n (n=lungimea sirului) elemente din sir de un n numar de parcurgeri (adica n*n). Se poate testa cu sirul [5,4,3,2,1] care trebuie sortat crescator.
+
+
+2.
+
+INSERTION SORT (metoda insertiei)
+
+Idee:
+
+1. se parcurge sirul de la al doilea element pana la ultimul. Pasii de mai jos se executa pentru fiecare element:
+2.1 se salveaza elementul intr-o variabila auxiliara (aux)
+2.2 se salveaza pozitia elementului intr-o variabila (poz)
+3. se compara elementul de pe pozitia poz-1 cu cel din variabila aux. Daca acesta nu respecta criteriul de ordonare, elementul de pe pozitia poz-1 va fi mutat pe pozitia poz, iar variabila poz va deveni poz-1. Acest pas se repeta pana cand se ajunge la pozitia 0 sau se intalneste un element care respecta criteriul de ordonare.
+4. la intalnirea pozitiei 0 sau a elementului care respecta criteriul de ordonare se insereaza elementul din aux pe pozitia pe care o contine variabila poz in acest moment
+
+Exemplu:
+
+sir = [4,2,5,1,3]
+       0 1 2 3 4
+
+i = 1 -> 4:
+
+i=1
+aux = sir[i] = 2
+poz = i = 1
+
+la fiecare comparare vom compara elementul din aux cu cel de pe pozitia poz-1
+
+2<4 -> 4 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [4,4,5,1,3] si poz = 0
+       0 1 2 3 4
+
+deoarece am ajuns la pozitia 0, inseram elementul aux pepozitia poz
+
+sir = [2,4,5,1,3]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i=2
+aux = sir[i] = 5
+poz = i = 2
+
+5>4 -> respecta criteriul de ordonare deci inseram elementul aux pe pozitia poz (in cazul asta e deja inserat)
+
+sir = [2,4,5,1,3]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i = 3
+aux = sir[i] = 1
+poz = i = 3
+
+1<5 -> 5 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [2,4,5,5,3] si poz = 2
+       0 1 2 3 4
+
+1<4 -> 4 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [2,4,4,5,3] si poz = 1
+       0 1 2 3 4
+
+1<2 -> 2 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [2,2,4,5,3] si poz = 0
+       0 1 2 3 4
+
+deoarece poz = 0 inseram aux pe pozitia poz
+
+sir = [1,2,4,5,3]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i = 4
+aux = sir[i] = 3
+poz = 4
+
+3<5 -> 5 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [1,2,4,5,5] si poz = 3
+       0 1 2 3 4
+
+3<4 -> 4 se muta pe pozitia poz, iar poz devine poz-1
+
+sir = [1,2,4,4,5] si poz = 2
+       0 1 2 3 4
+
+3>2 -> se respecta criteriul de ordonare deci inseram aux pe pozitia poz
+
+sir = [1,2,3,4,5]
+       0 1 2 3 4
+
+i a ajuns la 4 => am terminat de parcurs sirul.
+
+Algoritm:
+
+void insertionSort(int sir[], int lenSir)
+{
+	int aux,poz;
+
+	for (int i = 1; i < lenSir - 1; i++)
+	{
+		aux = sir[i];
+		poz = i;
+
+		while (poz > 0 && sir[poz - 1] > aux)
+		{
+			sir[poz] = sir[poz - 1];
+			poz--;
+		}
+
+		sir[poz] = aux;
+	}
+}
+
+Complexitate: O(n^2) deoarece in cel mai rau caz (un sir sortat invers fata de cum trebuie sortat) se efectueaza:
+
+5 4 3 2 1 -> 5 se muta cu un element mai in dreapta si 4 merge pe pozitia 0 => 1 mutare
+4 5 3 2 1 -> 4 si 5 se muta cu 1 element mai in dreapta si 3 merge pe pozitia 0 => 2 mutari
+3 4 5 2 1 -> 3,4 si 5 se muta cu 1 element mai in dreapta si 2 merge pe pozitia 0 => 3 mutari
+2 3 4 5 1 -> 2,3,4 si 5 se muta cu 1 element mai in dreapta si 1 merge pe pozitia 0 => 4 mutari
+
+deci pentru un sir de lungime n avem 1 + 2 + .... + n-1 mutari, adica n(n-1)/2 care se aproximeaza la n^2
+
+3.
+
+SELECTION SORT (metoda selectiei)
+
+Idea
+1. se parcurge sirul de la primul element pana la penultimul. Pentru fiecare element se executa pasii de mai jos:
+2. fie i = pozitia elementului curent. In functie de criteriul de ordonare vom cauta elementul maxim/minim din subsirul care incepe de la pozitia i pana la ultimul element din sir. Vom numi pozitia acestui element pozMin.
+3. interschimbam elementul de pe pozitia i cu cel de pe pozitia pozMin
+
+Exemplu:
+
+sir = [3,1,4,5,2]
+       0 1 2 3 4
+
+i -> de la 0 la 3
+
+i = 0
+poz = 0
+
+elementul minim in subsirul de la pozitia poz (adica 0) la 4 e 1 care se afla pe pozitia 1, deci
+
+pozMin = 1
+
+sir[poz] <-> sir[pozMin]
+
+sir = [1,3,4,5,2]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i = 1
+poz = 1
+
+elementul minim in subsirul de la pozitia poz (adica 1) la 4 e 2 care se afla pe pozitia 4, deci
+
+pozMin = 4
+
+sir[poz] <-> sir[pozMin]
+
+sir = [1,2,4,5,3]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i = 2
+poz = 2
+
+elementul minim in subsirul de la pozitia poz (adica 2) la 4 e 3 care se afla pe pozitia 4, deci
+pozMin = 4
+
+sir[poz] <-> sir[pozMin]
+
+sir = [1,2,3,5,4]
+       0 1 2 3 4
+
+continuam parcurgerea sirului
+
+i = 3
+poz = 3
+
+elementul minim in subsirul de la pozitia poz (adica 3) la 4 e 4 care se afla pe pozitia 4, deci
+pozMin = 4
+
+sir[poz] <-> sir[pozMin]
+
+sir = [1,2,3,4,5]
+       0 1 2 3 4
+
+am terminat de parcurs sirul pentru ca i = 3 (penultimul element)
+
+Algoritm:
+
+void selectionSort(int sir[], int lenSir)
+{
+	for (int i = 0; i < lenSir - 1; i++)
+	{
+		int pozMin = i, aux;
+
+		for (int j = i + 1; j < lenSir; j++)
+			if (sir[j] < sir[pozMin])
+				pozMin = j;
+
+		aux = sir[pozMin];
+		sir[pozMin] = sir[i];
+		sir[i] = aux;
+	}
+}
+
+Complexitate: O(n^2), deoarece in cel mai rau caz (sir ordonat invers fata de criteriul de ordonare) se parcurge sirul de la primul element pana la penultimul si pentru fiecare parcurgere se parcurge din nou sirul de la pozitia elementului curent pana la ultimul element pentru aflarea elementului minim din acel subsir. Pentru algoritmul din C++ scris mai sus se poate observa ca se fac
+
+n-1 + n-2 + n-3 + ... + 1 parcurgeri, adica n(n-1)/2 care se aproximeaza la n^2
+
+4.
+
+COUNT SORT
+
+Idea
+1. se genereaza 2 siruri auxiliare avand aceeasi lungime ca si sirul original (count[100], sirAuxiliar[100])
+2. se parcurge sirul original si se numara cate elemente sunt mai mici/mari decat elementul curent si valoarea respectiva o inseram in sirul count la acelasi indice ca al elementului curent
+3. parcurgem sirul original din nou (notam cu i indicele elementelor din sir), urmand ca in sirAuxiliar sa inseram pe pozitia reprezentata de count[i] elementul de pe pozitia i din sirul original (adica sirAuxiliar[count[i]] = sir[i])
+4. copiem elementele sirului sirAuxiliar in sirul original
+
+Exemplu:
+
+  sir = [4,5,2,1,3]
+         0 1 2 3 4
+count = [3,4,1,0,2] (3 elemente mai mici decat 4 [1,2 si 3], 4 mai mici decat 5 [1,2,3 si 4], 1 mai mic decat 2 [1], 0 mai mici decat 1 si 2 mai mici decat 3 [1 si 2])
+         0 1 2 3 4
+
+sirAuxiliar = [_,_,_,_,_]
+               0 1 2 3 4
+
+parcurgem sirul original cu un i de la 0 la 4
+
+i = 0
+
+sirAuxiliar[count[i]] = sir[i]
+
+sirAuxiliar = [_,_,_,4,_]
+               0 1 2 3 4
+
+i = 1
+
+sirAuxiliar[count[i]] = sir[i]
+
+sirAuxiliar = [_,_,_,4,5]
+               0 1 2 3 4
+
+i = 2
+
+sirAuxiliar[count[i]] = sir[i]
+
+sirAuxiliar = [_,2,_,4,5]
+               0 1 2 3 4
+
+i = 3
+
+sirAuxiliar[count[i]] = sir[i]
+
+sirAuxiliar = [1,2,_,4,5]
+               0 1 2 3 4
+
+i = 4
+
+sirAuxiliar[count[i]] = sir[i]
+
+sirAuxiliar = [1,2,3,4,5]
+               0 1 2 3 4
+
+am terminat de parcurs sirul
+
+sir[0...lenSir-1] = sirAuxiliar[0...lenSirAuxiliar-1] = [1,2,3,4,5] (am copiat elementele din sirAuxiliar in sir)
+
+Algoritm:
+
+void countSort(int sir[], int lenSir)
+{
+	int count[100] = { 0 }, sirAuxiliar[100];
+
+	// numaram cate elemente sunt mai mici decat fiecare element
+	for (int i = 0; i < lenSir - 1; i++)
+		for (int j = i + 1; j < lenSir; j++)
+			if (sir[i] < sir[j])
+				count[j]++;
+			else
+				count[i]++;
+
+	for (int i = 0; i < lenSir; i++)
+		sirAuxiliar[count[i]] = sir[i];
+
+	for (int i = 0; i < lenSir; i++)
+		sir[i] = sirAuxiliar[i];
+}
+
+Complexitate: O(n^2) - in cazul acestei versiuni de count sort [exista si alte versiuni care au complexitati diferite, dar asta se preda in scoli la noi], deoarece
+primul for compara fiecare element cu fiecare element, in total avand loc n-1 + n-2 + n-3 ... + 1 comparari, adica n(n-1)/2 plus inca 2 foruri care se repeta de 2 ori, deci 2n, insumand n(n-1)/2 + 2n care se aproximeaza la n^2.
+
+BONUS:
+
+5.
+
+MERGE SORT (sortare prin interclasare)
+
+Idee
+1. se ia un m = pozitia din mijlocul sirului.
+2. se imparte sirul in 2 siruri (de la pozitia 0 la m si de la m+1 la ultima pozitie). 
+2.1 daca sirul din stanga are cel putin 2 elemente se executa pasul 1 pentru acest sir
+2.2 acelasi lucru pentru sirul din dreapta
+3. atunci cand sirul din stanga si cel din dreapta contin un singur element, cele 2 elemente se reunesc, respectand criteriul de ordonare si urmand algoritmul de interclasare a 2 siruri ordonate, formand un al treilea sir ordonat dupa acelasi criteriu. Sirul nou obtinut va inlocui sirul din care au fost formate cele 2 siruri (stanga si dreapta)
+
+explicatie pentru pasul 3:
+
+daca am avut sirul [8,7], acesta s-a impartit in stanga = [8] si dreapta = [7], cele 2 siruri avand un singur element, acestea reunindu-se respectand criteriul de ordonare (8>7, deci 7 trebuie pus in stanga lui 8) si formand sirul [7,8] care va inlocui sirul original ([8,7])
+
+4. interclasam toate sirurile noi obtinute de la pasul 3, in ordine, pana ce obtin un sir cu acelasi numar de elemente ca sirul original
+
+Exemplu:
+
+sir = [8,1,6,3,7,9,4,5,2,10]
+
+fiecare sir se imparte in alte 2 siruri in functie de mijlocul lui pana ce se obtin siruri formate dintr-un singur element:
+
+             [8,1,6,3,7,9,4,5,2,10]
+              /                 \
+      [8,1,6,3,7]              [9,4,5,2,10]
+        /     \                   /     \
+     [8,1]    [6,3,7]          [9,4]    [5,2,10]
+     /   \     /    \          /  \      /   \
+   [8]   [1]  [6]  [3,7]      [9] [4]  [5]  [2,10]
+                   /   \                    /    \
+                  [3]  [7]                 [2]  [10]
+
+se interclaseaza toate sirurile obtinute de jos in sus, respectand criteriul de ordonare
+
+De exemplu [3] si [7] vor forma sirul [3,7], [8] si [1] vor forma sirul [1,8]
+
+Daca luam ramura din stanga si o prelucram pana la capat avem:
+
+nota: sirurile notate cu * se interclaseaza formand sirul notat cu **
+
+1.    [8,1,6,3,7]
+        /     \
+     [8,1]    [6,3,7]
+     /   \     /    \
+   [8]   [1]  [6]  [3,7]**
+                   /   \
+                  [3]* [7]*
+
+[3] si [7] se reunesc in sirul de mai sus si formeaza [3,7]
+
+2.    [8,1,6,3,7]
+        /      \
+     [1,8]**   [6,3,7]
+     /   \      /    \
+   [8]*  [1]*  [6]  [3,7]
+                    /   \
+                   [3]  [7]
+
+[8] si [1] se reunesc si inlocuiesc sirul [8,1] cu [1,8]
+
+3.    [8,1,6,3,7]
+        /      \
+     [1,8]     [3,6,7]**
+     /   \      /    \
+   [8]   [1]   [6]* [3,7]*
+                    /   \
+                   [3]  [7]
+
+[6] si [3,7] se reunesc si inlocuiesc sirul [6,3,7] cu [3,6,7]
+
+
+4.    [1,3,6,7,8]**
+        /      \
+     [1,8]*    [3,6,7]*
+     /   \      /    \
+   [8]   [1]   [6]  [3,7]
+                    /   \
+                   [3]  [7]
+
+[1,8] si [3,6,7] se reunesc si inlocuiesc sirul [8,1,5,3,7] cu [1,3,5,7,8]
+
+Aceeasi metoda se executa pentru ramura din dreapta urmand a se obtine sirul [2,4,5,9,10] care va fi mai apoi reunit cu cel obtinut din ramura din stanga intr-un sir sortat cu acelasi numar de elemente ca sirul original, adica [1,2,3,4,5,6,7,8,9,10]
+
+Algoritm:
+
+Interclasarea a 2 siruri ordonate pentru a se obtine un al treilea sir ordonat dupa acelasi principiu:
+
+void Merge(int left[], int lenLeft, int right[], int lenRight, int sir[])
+{
+	int i, j;
+
+	i = 0;
+	j = 0;
+
+	while (i < lenLeft && j < lenRight)
+	{
+		if (left[i] < right[j])
+		{
+			sir[i + j] = left[i];
+			i++;
+		}
+		else
+		{
+			sir[i + j] = right[j];
+			j++;
+		}
+	}
+
+	while (i < lenLeft)
+		sir[i + j] = left[i++];
+
+	while (j < lenRight)
+		sir[i + j] = right[j++];
+}
+
+Functia recursiva care ordoneaza sirul original folosindu-se de functia de interclasare de mai sus
+
+void MergeRecursiv(int sir[], int lenSir)
+{
+	if (lenSir >= 2)
+	{
+		int mid = lenSir / 2;
+		int *left = new int[mid];
+		int *right = new int[lenSir - mid];
+
+		for (int i = 0; i < mid; i++)
+			left[i] = sir[i];
+		for (int i = mid; i < lenSir; i++)
+			right[i - mid] = sir[i];
+
+		MergeRecursiv(left, mid);
+		MergeRecursiv(right,lenSir-mid);
+		Merge(left,mid, right, lenSir-mid,sir);
+	}
+}
+
+Complexitate: O(n*log(n)) deoarece sirurile se sparg in bucati pana cand se obtin siruri cu un singur element, si se executa operatii pe toate sirurile noi obtinute.
+De exemplu sirul [6,8,9,3,5] se descompune in
+
+          [6,8,9,3,5]
+           /       \ (1)
+        [6,8]     [9,3,5]
+        /  \ (2)   /    \ (3)
+      [6]  [8]    [9]  [3,5]
+                       /   \ (4)
+                      [3]  [5]
+
+lungimea sirului e 5, deci n*log(n) = 5*log(5) = aproximativ 3.4, ceea ce inseamna ca am impartit sirul original in subsiruri pana cand am avut siruri de un element de aproximativ 3.4 ori (in exemplul de mai sus de 4 ori)
+
+6. QUICK SORT
+
+Idea
+1. se alege un element pivot din sir (pentru acest exemplu vom considera ca element pivot ultimul element din sir)
+2. se muta toate elementele care respecta un anumit criteriu de ordonare in stanga pivotului, iar cele care respecta criteriul opus in dreapta
+3. se considera pIndex pozitia elementului pivot in sir la momentul curent. Se creaza 2 subsiruri, sir1 de la prima pozitie din sir pana la pIndex-1 si sir2 de la pIndex+1 pana la ultima pozitie din sir.
+4. se executa algoritmul de la pasul 1 pentru subsirurile obtinute care contin cel putin doua elemente
+
+#include<iostream>
+using namespace std;
+
+int partition(int sir[], int start, int end)
+{
+	int pivot = sir[end], pIndex = start, aux;
+
+	for (int i = start; i < end; i++)
+	{
+		if (sir[i] < pivot)
+		{
+			aux = sir[i];
+			sir[i] = sir[pIndex];
+			sir[pIndex] = aux;
+			pIndex++;
+		}
+	}
+
+	aux = sir[end];
+	sir[end] = sir[pIndex];
+	sir[pIndex] = aux;
+
+	return pIndex;
+}
+
+void quickSort(int sir[], int start, int end)
+{
+	if (start < end)
+	{
+		int pIndex;
+
+		pIndex = partition(sir, start, end);
+
+		quickSort(sir, start, pIndex - 1);
+		quickSort(sir, pIndex + 1, end);
+	}
+}
+
+void tiparire(int sir[], int len)
+{
+	for (int i = 0; i < len; i++)
+		cout << sir[i] << " ";
+}
+int main()
+{
+	int sir[10] = { 7,2,5,4,1,10,3,8,9,6 };
+
+	quickSort(sir, 0, 9);
+	tiparire(sir, 10);
+	cout << endl << endl;
+	system("pause");
+
+	return 0;
+}
